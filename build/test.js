@@ -7,23 +7,33 @@ var TASK_NAME = 'test';
 /**
  * Run test once and exit
  */
-gulp.task(TASK_NAME, function (done) {
-  var files = config.demo.scripts
-    .concat(config.vendor.scripts)
-    .concat(config.plugin.scripts)
-    .concat(config.plugin.tests.unit);
+var testTasks = [];
+config.versions.forEach(function(version) {
+  var testTask = TASK_NAME + '-' + version;
+  var buildConfig = config.build(version);
 
-  var autoWatch = !!config.options['watch'];
+  gulp.task(testTask, function (done) {
+    var files = buildConfig.demo.scripts
+      .concat(config.vendor.scripts)
+      .concat(buildConfig.plugin.scripts)
+      .concat(buildConfig.plugin.tests.unit);
 
-  karma.start({
-    configFile: __dirname + '/../karma.conf.js',
-    files: files,
-    autoWatch: autoWatch,
-    singleRun: !autoWatch,
-    // There is an error on karma gulp so we need to wrap done. Please see https://stackoverflow.com/questions/26614738/issue-running-karma-task-from-gulp/26958997#26958997
-  }, function (error) {
-    done(error);
+    var autoWatch = !!config.options['watch'];
+
+    karma.start({
+      configFile: __dirname + '/../karma.conf.js',
+      files: files,
+      autoWatch: autoWatch,
+      singleRun: !autoWatch,
+      // There is an error on karma gulp so we need to wrap done. Please see https://stackoverflow.com/questions/26614738/issue-running-karma-task-from-gulp/26958997#26958997
+    }, function (error) {
+      done(error);
+    });
   });
-});
+
+  testTasks.push(testTask);
+})
+
+gulp.task(TASK_NAME, testTasks);
 
 module.exports = new BuildTaskDoc(TASK_NAME, "Starts karma on 'autowatch' mode with all the libs, \nsources and tests of the player", 6.1);
