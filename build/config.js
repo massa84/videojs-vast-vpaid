@@ -7,6 +7,9 @@ var knownOptions = {
   default: {env: process.env.NODE_ENV || 'development'}
 };
 
+var videojs4x = 'bower_components/video-4x.js/dist/video-js/';
+var videojs5x = 'bower_components/video-5x.js/dist/video-js/';
+
 var options = parseArgs(process.argv.slice(2), knownOptions);
 module.exports = {
   git:{
@@ -19,22 +22,39 @@ module.exports = {
     pages: [
       'demo/tpls/index.html'
     ],
-    styles: [
-      'bower_components/video.js/dist/video-js/video-js.css',
-      'demo/styles/*.css'
-    ],
+
+    styles:  {
+      4x: [
+        videojs4x + 'video-js.css',
+        'demo/styles/*.css'
+      ],
+      5x: [
+        videojs5x + 'video-js.css',
+        'demo/styles/*.css'
+      ]
+    },
 
     assets: [
       'demo/assets/*'
     ],
 
-    fonts: [
-      'bower_components/video.js/dist/video-js/font/*'
-    ],
+    fonts: {
+      4x: [
+        videojs4x + 'font/*'
+      ],
+      5x: [
+        videojs5x + 'font/*'
+      ]
+    },
 
-    scripts: [
-      'bower_components/video.js/dist/video-js/video.dev.js'
-    ]
+    scripts: {
+      4x: [
+        videojs4x + 'video.dev.js'
+      ],
+      5x: [
+        videojs5x + 'video.dev.js'
+      ]
+    }
   },
 
   //Vendor files
@@ -64,12 +84,24 @@ module.exports = {
   },
 
   plugin: {
-    scripts: [
-      'src/utils/pollyfill.js',
-      'src/utils/utilityFunctions.js',
-      'src/utils/**/*.js',
-      'src/**/*.js'
-    ],
+    scripts: {
+      4x: [
+        'src/utils/pollyfill.js',
+        'src/utils/utilityFunctions.js',
+        'src/utils/**/*.js',
+        'src/ads/**/*.js',
+        'src/plugin/videojs5x.vast.js',
+        'src/plugin/components/**/*.js'
+      ],
+      5x: [
+        'src/utils/pollyfill.js',
+        'src/utils/utilityFunctions.js',
+        'src/utils/**/*.js',
+        'src/ads/**/*.js',
+        'src/plugin/videojs5x.vast.js',
+        'src/plugin/components/**/*.js'
+      ]
+    },
     styles: [
       'src/**/*.css'
     ],
@@ -84,11 +116,15 @@ module.exports = {
 
   //App files for production
   prodfile: {
-    scripts: pkg.name + '.js',
+    scripts: {
+      4x: pkg.name + '4x.js',
+      5x: pkg.name + '5x.js'
+    }
     styles: pkg.name + '.css'
   },
 
   //Dist folder
   DIST: path.normalize('__dirname/../bin'),
   DEV: path.normalize('__dirname/../dev')
+
 };
