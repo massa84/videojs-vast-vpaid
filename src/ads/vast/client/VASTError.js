@@ -1,4 +1,4 @@
-var VAST = {};
+'use strict';
 
 function VASTError(message, code) {
   this.message = 'VAST Error: ' + (message || '');
@@ -9,3 +9,5 @@ function VASTError(message, code) {
 
 VASTError.prototype = new Error();
 VASTError.prototype.name = "VAST Error";
+
+module.exports = VASTError;

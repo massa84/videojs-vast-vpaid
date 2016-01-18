@@ -1,3 +1,10 @@
+'use strict';
+
+var vastUtil = require('./vastUtil');
+
+var utilities = require('../../../utils/utilityFunctions');
+var xml = require('../../../utils/xml');
+
 function Wrapper(wrapperJTree) {
   if(!(this instanceof Wrapper)) {
     return new Wrapper(wrapperJTree);
@@ -14,9 +21,9 @@ function Wrapper(wrapperJTree) {
   this.extensions = wrapperJTree.extensions;
 
   //Optional attrs
-  this.followAdditionalWrappers = isDefined(xml.attr(wrapperJTree, 'followAdditionalWrappers'))? xml.attr(wrapperJTree, 'followAdditionalWrappers'): true;
+  this.followAdditionalWrappers = utilities.isDefined(xml.attr(wrapperJTree, 'followAdditionalWrappers'))? xml.attr(wrapperJTree, 'followAdditionalWrappers'): true;
   this.allowMultipleAds = xml.attr(wrapperJTree, 'allowMultipleAds');
   this.fallbackOnNoAd = xml.attr(wrapperJTree, 'fallbackOnNoAd');
 }
 
-
+module.exports = Wrapper;

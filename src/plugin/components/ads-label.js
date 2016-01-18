@@ -1,6 +1,8 @@
-vjs.AdsLabel = vjs.Component.extend({
+var dom = require('../../utils/dom');
+
+var AdsLabel = {
   /** @constructor */
-  init: function (player, options) {
+  init: function init(player, options) {
     vjs.Component.call(this, player, options);
 
     var that = this;
@@ -13,12 +15,14 @@ vjs.AdsLabel = vjs.Component.extend({
       }
       dom.removeClass(that.el(), 'vjs-label-hidden');
     }, 0);
-  }
-});
+  },
 
-vjs.AdsLabel.prototype.createEl = function(){
-  return vjs.Component.prototype.createEl.call(this, 'div', {
-    className: 'vjs-ads-label vjs-control vjs-label-hidden',
-    innerHTML: 'Advertisement'
-  });
+  createEl: function createEl() {
+    return vjs.Component.prototype.createEl.call(this, 'div', {
+      className: 'vjs-ads-label vjs-control vjs-label-hidden',
+      innerHTML: 'Advertisement'
+    })
+  }
 };
+
+module.exports = AdsLabel;

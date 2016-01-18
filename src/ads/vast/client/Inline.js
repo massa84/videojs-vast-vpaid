@@ -1,3 +1,10 @@
+'use strict';
+
+var vastUtil = require('./vastUtil');
+
+var utilities = require('../../../utils/utilityFunctions');
+var xml = require('../../../utils/xml');
+
 function InLine(inlineJTree) {
   if (!(this instanceof InLine)) {
     return new InLine(inlineJTree);
@@ -20,8 +27,8 @@ function InLine(inlineJTree) {
   /*** Local Functions ***/
   function parseSurveys(inlineSurveys) {
     if (inlineSurveys) {
-      return transformArray(isArray(inlineSurveys) ? inlineSurveys : [inlineSurveys], function (survey) {
-        if(isNotEmptyString(survey.keyValue)){
+      return utilities.transformArray(utilities.isArray(inlineSurveys) ? inlineSurveys : [inlineSurveys], function (survey) {
+        if(utilities.isNotEmptyString(survey.keyValue)){
           return {
             uri: survey.keyValue,
             type: survey.attr('type')
@@ -34,3 +41,5 @@ function InLine(inlineJTree) {
     return [];
   }
 }
+
+module.exports = InLine;

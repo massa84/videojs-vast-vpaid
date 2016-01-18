@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Inner helper class that deals with the logic of the individual steps needed to setup an ad in the player.
  *
@@ -6,6 +8,17 @@
  *
  * @constructor
  */
+
+var VASTResponse = require('./VASTResponse');
+var VASTError = require('./VASTError');
+var VASTTracker = require('./VASTTracker');
+var vastUtil = require('./vastUtil');
+
+var async = require('../../../utils/async');
+var dom = require('../../../utils/dom');
+var playerUtils = require('../../../utils/playerUtils');
+var utilities = require('../../../utils/utilityFunctions');
+
 function VASTIntegrator(player) {
   if (!(this instanceof VASTIntegrator)) {
     return new VASTIntegrator(player);
@@ -16,7 +29,7 @@ function VASTIntegrator(player) {
 
 VASTIntegrator.prototype.playAd = function playAd(vastResponse, callback) {
   var that = this;
-  callback = callback || noop;
+  callback = callback || utilities.noop;
 
   if (!(vastResponse instanceof VASTResponse)) {
     return callback(new VASTError('On VASTIntegrator, missing required VASTResponse'));
@@ -168,7 +181,7 @@ VASTIntegrator.prototype._setupEvents = function setupEvents(adMediaFile, tracke
 VASTIntegrator.prototype._addSkipButton = function addSkipButton(source, tracker, response, callback) {
   var skipOffsetInSec;
 
-  if (isNumber(response.skipoffset)) {
+  if (utilities.isNumber(response.skipoffset)) {
     skipOffsetInSec = response.skipoffset / 1000;
     addSkipButtonToPlayer(this.player, skipOffsetInSec);
   }
@@ -214,7 +227,7 @@ VASTIntegrator.prototype._addSkipButton = function addSkipButton(source, tracker
   function updateSkipButtonState(skipButton, skipOffset, player) {
     var timeLeft = Math.ceil(skipOffset - player.currentTime());
     if (timeLeft > 0) {
-      skipButton.innerHTML = "Skip in " + toFixedDigits(timeLeft, 2) + "...";
+      skipButton.innerHTML = "Skip in " + utilities.toFixedDigits(timeLeft, 2) + "...";
     } else {
       if (!dom.hasClass(skipButton, 'enabled')) {
         dom.addClass(skipButton, 'enabled');
@@ -244,7 +257,7 @@ VASTIntegrator.prototype._addClickThrough = function addClickThrough(mediaFile, 
     dom.addClass(blocker, 'vast-blocker');
     blocker.href = generateClickThroughURL(clickThroughMacro, player);
 
-    if (isString(clickThroughMacro)) {
+    if (utilities.isString(clickThroughMacro)) {
       blocker.target = "_blank";
     }
 
@@ -323,3 +336,5 @@ VASTIntegrator.prototype._playSelectedAd = function playSelectedAd(source, respo
 VASTIntegrator.prototype._trackError = function trackError(error, response) {
   vastUtil.track(response.errorURLMacros, {ERRORCODE: error.code || 900});
 };
+
+module.exports = VASTIntegrator;

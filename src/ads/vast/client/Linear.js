@@ -1,3 +1,13 @@
+'use strict';
+
+var Linear = require('./Linear');
+var vastUtil = require('./vastUtil');
+var TrackingEvent = require('./TrackingEvent');
+var MediaFile = require('./MediaFile');
+
+var utilities = require('../../../utils/utilityFunctions');
+var xml = require('../../../utils/xml');
+
 function Linear(linearJTree) {
   if (!(this instanceof Linear)) {
     return new Linear(linearJTree);
@@ -14,7 +24,7 @@ function Linear(linearJTree) {
   if (linearJTree.videoClicks) {
     this.videoClicks = new VideoClicks(linearJTree.videoClicks);
   }
-  
+
   if(linearJTree.adParameters) {
     this.adParameters = xml.keyValue(linearJTree.adParameters);
 
@@ -26,9 +36,9 @@ function Linear(linearJTree) {
   /*** Local functions ***/
   function parseTrackingEvents(trackingEvents, duration) {
     var trackings = [];
-    if (isDefined(trackingEvents)) {
-      trackingEvents = isArray(trackingEvents) ? trackingEvents : [trackingEvents];
-      trackingEvents.forEach(function (trackingData) {
+    if (utilities.isDefined(trackingEvents)) {
+      trackingEvents = utilities.isArray(trackingEvents) ? trackingEvents : [trackingEvents];
+      trackingEvents.utilities.forEach(function (trackingData) {
         trackings.push(new TrackingEvent(trackingData, duration));
       });
     }
@@ -37,13 +47,15 @@ function Linear(linearJTree) {
 
   function parseMediaFiles(mediaFilesJxonTree) {
     var mediaFiles = [];
-    if (isDefined(mediaFilesJxonTree)) {
-      mediaFilesJxonTree = isArray(mediaFilesJxonTree) ? mediaFilesJxonTree : [mediaFilesJxonTree];
+    if (utilities.isDefined(mediaFilesJxonTree)) {
+      mediaFilesJxonTree = utilities.isArray(mediaFilesJxonTree) ? mediaFilesJxonTree : [mediaFilesJxonTree];
 
-      mediaFilesJxonTree.forEach(function (mfData) {
+      mediaFilesJxonTree.utilities.forEach(function (mfData) {
         mediaFiles.push(new MediaFile(mfData));
       });
     }
     return mediaFiles;
   }
 }
+
+module.exports = Linear;

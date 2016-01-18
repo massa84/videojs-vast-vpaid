@@ -1,3 +1,7 @@
+'use strict';
+
+var utilities = require('./utilityFunctions');
+
 var xml = {};
 
 xml.strToXMLDoc = function strToXMLDoc(stringContainingXMLSource){
@@ -19,7 +23,7 @@ xml.strToXMLDoc = function strToXMLDoc(stringContainingXMLSource){
     try {
       parsedDocument = parser.parseFromString(stringContainingXMLSource, "application/xml");
 
-      if(isParseError(parsedDocument) || isEmptyString(stringContainingXMLSource)){
+      if(isParseError(parsedDocument) || utilities.isEmptyString(stringContainingXMLSource)){
         throw new Error();
       }
     }catch(e){
@@ -32,8 +36,8 @@ xml.strToXMLDoc = function strToXMLDoc(stringContainingXMLSource){
   function isParseError(parsedDocument) {
     try { // parser and parsererrorNS could be cached on startup for efficiency
       var parser = new DOMParser(),
-        errorneousParse = parser.parseFromString('INVALID', 'text/xml'),
-        parsererrorNS = errorneousParse.getElementsByTagName("parsererror")[0].namespaceURI;
+        erroneousParse = parser.parseFromString('INVALID', 'text/xml'),
+        parsererrorNS = erroneousParse.getElementsByTagName("parsererror")[0].namespaceURI;
 
       if (parsererrorNS === 'http://www.w3.org/1999/xhtml') {
         // In PhantomJS the parseerror element doesn't seem to have a special namespace, so we are just guessing here :(
@@ -51,7 +55,7 @@ xml.parseText = function parseText (sValue) {
   if (/^\s*$/.test(sValue)) { return null; }
   if (/^(?:true|false)$/i.test(sValue)) { return sValue.toLowerCase() === "true"; }
   if (isFinite(sValue)) { return parseFloat(sValue); }
-  if (isISO8601(sValue)) { return new Date(sValue); }
+  if (utilities.isISO8601(sValue)) { return new Date(sValue); }
   return sValue.trim();
 };
 
@@ -72,7 +76,7 @@ xml.JXONTree = function JXONTree (oXMLParent) {
       /*jshint bitwise: false*/
       if ((oNode.nodeType - 1 | 1) === 3) { sCollectedTxt += oNode.nodeType === 3 ? oNode.nodeValue.trim() : oNode.nodeValue; }
       else if (oNode.nodeType === 1 && !oNode.prefix) {
-        sProp = decapitalize(oNode.nodeName);
+        sProp = utilities.decapitalize(oNode.nodeName);
         vContent = new xml.JXONTree(oNode);
         if (this.hasOwnProperty(sProp)) {
           if (this[sProp].constructor !== Array) { this[sProp] = [this[sProp]]; }
@@ -89,13 +93,13 @@ xml.JXONTree = function JXONTree (oXMLParent) {
     var oAttrib;
     for (var nAttrib = 0; nAttrib < oXMLParent.attributes.length; nAttrib++) {
       oAttrib = oXMLParent.attributes.item(nAttrib);
-      this["@" + decapitalize(oAttrib.name)] = parseText(oAttrib.value.trim());
+      this["@" + utilities.decapitalize(oAttrib.name)] = parseText(oAttrib.value.trim());
     }
   }
 };
 
 xml.JXONTree.prototype.attr = function(attr) {
-  return this['@' + decapitalize(attr)];
+  return this['@' + utilities.decapitalize(attr)];
 };
 
 xml.toJXONTree = function toJXONTree(xmlString){
@@ -118,7 +122,7 @@ xml.keyValue = function getKeyValue(xmlObj) {
 
 xml.attr = function getAttrValue(xmlObj, attr) {
   if(xmlObj) {
-    return xmlObj['@' + decapitalize(attr)];
+    return xmlObj['@' + utilities.decapitalize(attr)];
   }
   return undefined;
 };

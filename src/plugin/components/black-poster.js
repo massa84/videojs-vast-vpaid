@@ -12,9 +12,9 @@
  * @param {Object=} options
  * @constructor
  */
-vjs.BlackPoster = vjs.Component.extend({
+var BlackPoster = {
   /** @constructor */
-  init: function(player, options){
+  init: function init(player, options) {
     vjs.Component.call(this, player, options);
 
     var posterImg = player.getChild('posterImage');
@@ -25,15 +25,12 @@ vjs.BlackPoster = vjs.Component.extend({
         player.el().insertBefore(this.el(), posterImg.el());
       }
     }.bind(this), 0);
+  },
+  createEl: function createEl(){
+    return vjs.createEl('div', {
+      className: 'vjs-black-poster'
+    });
   }
-});
-
-/**
- * Create the black poster div element
- * @return {Element}
- */
-vjs.BlackPoster.prototype.createEl = function(){
-  return vjs.createEl('div', {
-    className: 'vjs-black-poster'
-  });
 };
+
+module.exports = BlackPoster;

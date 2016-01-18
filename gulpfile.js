@@ -4,12 +4,39 @@ var gulp = require('gulp');
 var async = require('async');
 var Table = require('cli-table');
 var BuildTaskDoc = require('./build/BuildTaskDoc');
+var fs = require('fs');
 
 //Init colors
 require('./build/COLORS');
 
 //We retrieve the build-tasks
 var buildTasksMap = requireDir('./build');
+
+var browserify = require('browserify');
+// Basic usage
+gulp.task('browserify', function(done) {
+    [
+        'videojs-4x.vast.js',
+        'videojs-5x.vast.js'
+    ].forEach(function (entry, i, entries) {
+        // Count remaining bundling operations to track
+        // when to call done(). Could alternatively use
+        // merge-stream and return its output.
+        entries.remaining = entries.remaining || entries.length;
+
+        browserify({
+            entries: 'src/plugin/' + entry,
+            paths: 'bower_components'
+        })
+            .bundle()
+            .pipe(
+                fs.createWriteStream('./tmp/' + entry)
+                    .on('finish', function () {
+                        if (! --entries.remaining) done();
+                    })
+            );
+        });
+});
 
 gulp.task('default', function (finishTask) {
     async.series([

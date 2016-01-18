@@ -1,4 +1,6 @@
-"use strict";
+'use strict';
+
+var utilities = require('./utilityFunctions');
 
 var dom = {};
 
@@ -31,12 +33,12 @@ dom.show = function show(el) {
 dom.hasClass = function hasClass(el, cssClass) {
   var classes, i, len;
 
-  if (isNotEmptyString(cssClass)) {
+  if (utilities.isNotEmptyString(cssClass)) {
     if (el.classList) {
       return el.classList.contains(cssClass);
     }
 
-    classes = isString(el.getAttribute('class')) ? el.getAttribute('class').split(/\s+/) : [];
+    classes = utilities.isString(el.getAttribute('class')) ? el.getAttribute('class').split(/\s+/) : [];
     cssClass = (cssClass || '');
 
     for (i = 0, len = classes.length; i < len; i += 1) {
@@ -51,13 +53,13 @@ dom.hasClass = function hasClass(el, cssClass) {
 dom.addClass = function (el, cssClass) {
   var classes;
 
-  if (isNotEmptyString(cssClass)) {
+  if (utilities.isNotEmptyString(cssClass)) {
     if (el.classList) {
       return el.classList.add(cssClass);
     }
 
-    classes = isString(el.getAttribute('class')) ? el.getAttribute('class').split(/\s+/) : [];
-    if (isString(cssClass) && isNotEmptyString(cssClass.replace(/\s+/, ''))) {
+    classes = utilities.isString(el.getAttribute('class')) ? el.getAttribute('class').split(/\s+/) : [];
+    if (utilities.isString(cssClass) && utilities.isNotEmptyString(cssClass.replace(/\s+/, ''))) {
       classes.push(cssClass);
       el.setAttribute('class', classes.join(' '));
     }
@@ -67,15 +69,15 @@ dom.addClass = function (el, cssClass) {
 dom.removeClass = function (el, cssClass) {
   var classes;
 
-  if (isNotEmptyString(cssClass)) {
+  if (utilities.isNotEmptyString(cssClass)) {
     if (el.classList) {
       return el.classList.remove(cssClass);
     }
 
-    classes = isString(el.getAttribute('class')) ? el.getAttribute('class').split(/\s+/) : [];
+    classes = utilities.isString(el.getAttribute('class')) ? el.getAttribute('class').split(/\s+/) : [];
     var newClasses = [];
     var i, len;
-    if (isString(cssClass) && isNotEmptyString(cssClass.replace(/\s+/, ''))) {
+    if (utilities.isString(cssClass) && utilities.isNotEmptyString(cssClass.replace(/\s+/, ''))) {
 
       for (i = 0, len = classes.length; i < len; i += 1) {
         if (cssClass !== classes[i]) {
@@ -88,15 +90,15 @@ dom.removeClass = function (el, cssClass) {
 };
 
 dom.addEventListener = function addEventListener(el, type, handler) {
-  if(isArray(el)){
-    forEach(el, function(e) {
+  if(utilities.isArray(el)){
+    utilities.forEach(el, function(e) {
       dom.addEventListener(e, type, handler);
     });
     return;
   }
 
-  if(isArray(type)){
-    forEach(type, function(t) {
+  if(utilities.isArray(type)){
+    utilities.forEach(type, function(t) {
       dom.addEventListener(el, t, handler);
     });
     return;
@@ -115,15 +117,15 @@ dom.addEventListener = function addEventListener(el, type, handler) {
 };
 
 dom.removeEventListener = function removeEventListener(el, type, handler) {
-  if(isArray(el)){
-    forEach(el, function(e) {
+  if(utilities.isArray(el)){
+    utilities.forEach(el, function(e) {
       dom.removeEventListener(e, type, handler);
     });
     return;
   }
 
-  if(isArray(type)){
-    forEach(type, function(t) {
+  if(utilities.isArray(type)){
+    utilities.forEach(type, function(t) {
       dom.removeEventListener(el, t, handler);
     });
     return;
@@ -196,7 +198,7 @@ dom.getDimension = function getDimension(element) {
   var rect;
 
   //On IE9 and below getBoundingClientRect does not work consistently
-  if(!isOldIE() && element.getBoundingClientRect) {
+  if(!utilities.isOldIE() && element.getBoundingClientRect) {
     rect = element.getBoundingClientRect();
     return {
       width: rect.width,
@@ -209,3 +211,5 @@ dom.getDimension = function getDimension(element) {
     height: element.offsetHeight
   };
 };
+
+module.exports = dom;

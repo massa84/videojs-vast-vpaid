@@ -1,3 +1,7 @@
+'use strict';
+
+var xml = require('../../../utils/xml');
+
 function MediaFile(mediaFileJTree) {
   if (!(this instanceof MediaFile)) {
     return new MediaFile(mediaFileJTree);
@@ -20,3 +24,5 @@ function MediaFile(mediaFileJTree) {
   this.maintainAspectRatio = mediaFileJTree.attr('maintainAspectRatio');
   this.apiFramework = mediaFileJTree.attr('apiFramework');
 }
+
+module.exports = MediaFile;

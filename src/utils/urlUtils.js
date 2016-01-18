@@ -1,10 +1,6 @@
 'use strict';
 
-/**
- * documentMode is an IE-only property
- * http://msdn.microsoft.com/en-us/library/ie/cc196988(v=vs.85).aspx
- */
-var msie = document.documentMode;
+var utilities = require('./utilityFunctions');
 
 /**
  *
@@ -63,6 +59,11 @@ var msie = document.documentMode;
  */
 
 var urlParsingNode = document.createElement("a");
+/**
+ * documentMode is an IE-only property
+ * http://msdn.microsoft.com/en-us/library/ie/cc196988(v=vs.85).aspx
+ */
+var msie = document.documentMode;
 
 function urlParts(url) {
   var href = url;
@@ -84,7 +85,7 @@ function urlParts(url) {
     search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
     hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
     hostname: urlParsingNode.hostname,
-    port: isNotEmptyString(urlParsingNode.port)? urlParsingNode.port: 80,
+    port: utilities.isNotEmptyString(urlParsingNode.port)? urlParsingNode.port: 80,
     pathname: (urlParsingNode.pathname.charAt(0) === '/')
       ? urlParsingNode.pathname
       : '/' + urlParsingNode.pathname
@@ -100,7 +101,7 @@ function urlParts(url) {
 function queryStringToObj(qs, cond) {
   var pairs, qsObj;
 
-  cond = isFunction(cond)? cond : function() {
+  cond = utilities.isFunction(cond)? cond : function() {
     return true;
   };
 
@@ -108,7 +109,7 @@ function queryStringToObj(qs, cond) {
   pairs = qs.split('&');
   qsObj = {};
 
-  forEach(pairs, function (pair) {
+  utilities.forEach(pairs, function (pair) {
     var keyValue, key, value;
     if (pair !== '') {
       keyValue = pair.split('=');
@@ -130,9 +131,14 @@ function queryStringToObj(qs, cond) {
  */
 function objToQueryString(obj) {
   var pairs = [];
-  forEach(obj, function (value, key) {
+  utilities.forEach(obj, function (value, key) {
     pairs.push(key + '=' + value);
   });
   return pairs.join('&');
 }
 
+module.exports = {
+  urlParts: urlParts,
+  queryStringToObj: queryStringToObj,
+  objToQueryString: objToQueryString
+};

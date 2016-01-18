@@ -1,3 +1,8 @@
+'use strict';
+
+var dom = require('./dom');
+var utilities = require('./utilityFunctions');
+
 var playerUtils = {};
 
 /**
@@ -29,16 +34,16 @@ playerUtils.getPlayerSnapshot = function getPlayerSnapshot(player) {
   function getSuppressedTracks(player) {
     var tracks = player.remoteTextTracks ? player.remoteTextTracks() : [];
 
-    if (tracks && isArray(tracks.tracks_)) {
+    if (tracks && utilities.isArray(tracks.tracks_)) {
       tracks = tracks.tracks_;
     }
 
-    if (!isArray(tracks)) {
+    if (!utilities.isArray(tracks)) {
       tracks = [];
     }
 
     var suppressedTracks = [];
-    tracks.forEach(function (track) {
+    tracks.utilities.forEach(function (track) {
       suppressedTracks.push({
         track: track,
         mode: track.mode
@@ -126,7 +131,7 @@ playerUtils.restorePlayerSnapshot = function restorePlayerSnapshot(player, snaps
 
   function restoreTracks() {
     var suppressedTracks = snapshot.suppressedTracks;
-    suppressedTracks.forEach(function (trackSnapshot) {
+    suppressedTracks.utilities.forEach(function (trackSnapshot) {
       trackSnapshot.track.mode = trackSnapshot.mode;
     });
   }
@@ -245,7 +250,7 @@ playerUtils.prepareForAds = function (player) {
 
       /*** local functions ***/
       function firstPlay() {
-        if (!isIPhone()) {
+        if (!utilities.isIPhone()) {
           volumeSnapshot = saveVolumeSnapshot();
           player.muted(true);
         }
@@ -332,7 +337,7 @@ playerUtils.prepareForAds = function (player) {
   }
 
   function restoreVolumeSnapshot(snapshot) {
-    if (isObject(snapshot)) {
+    if (utilities.isObject(snapshot)) {
       player.volume(snapshot.volume);
       player.muted(snapshot.muted);
     }
@@ -379,12 +384,15 @@ playerUtils.once = function once(player, events, handler) {
   function listener() {
     handler.apply(null, arguments);
 
-    events.forEach(function (event) {
+    events.utilities.forEach(function (event) {
       player.off(event, listener);
     });
   }
 
-  events.forEach(function (event) {
+  events.utilities.forEach(function (event) {
     player.on(event, listener);
   });
 };
+
+
+module.exports = playerUtils;

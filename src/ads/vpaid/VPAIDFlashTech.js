@@ -1,3 +1,8 @@
+'use strict';
+
+var utilities = require('../../utils/utilityFunctions');
+var dom = require('../../utils/dom');
+
 function VPAIDFlashTech(mediaFile, settings) {
   if (!(this instanceof VPAIDFlashTech)) {
     return new VPAIDFlashTech(mediaFile);
@@ -11,7 +16,7 @@ function VPAIDFlashTech(mediaFile, settings) {
 
   /*** local functions ***/
   function sanityCheck(mediaFile) {
-    if (!mediaFile || !isString(mediaFile.src)) {
+    if (!mediaFile || !utilities.isString(mediaFile.src)) {
       throw new VASTError('on VPAIDFlashTech, invalid MediaFile');
     }
   }
@@ -42,7 +47,7 @@ VPAIDFlashTech.prototype.loadAdUnit = function loadFlashCreative(containerEl, ob
       throw new VASTError('on VPAIDFlashTech.loadAdUnit, invalid dom container element');
     }
 
-    if (!isFunction(cb)) {
+    if (!utilities.isFunction(cb)) {
       throw new VASTError('on VPAIDFlashTech.loadAdUnit, missing valid callback');
     }
   }
@@ -53,7 +58,7 @@ VPAIDFlashTech.prototype.unloadAdUnit = function () {
     try{
       this.vpaidFlashClient.destroy();
     } catch(e){
-      if(console && isFunction(console.log)){
+      if(console && utilities.isFunction(console.log)){
         console.log('VAST ERROR: trying to unload the VPAID adunit');
       }
     }
@@ -65,3 +70,5 @@ VPAIDFlashTech.prototype.unloadAdUnit = function () {
     this.containerEl = null;
   }
 };
+
+module.exports = VPAIDFlashTech;

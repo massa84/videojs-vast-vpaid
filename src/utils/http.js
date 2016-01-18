@@ -1,4 +1,7 @@
-"use strict";
+'use strict';
+
+var urlUtils = require('./urlUtils');
+var utilities = require('./utilityFunctions');
 
 function HttpRequestError(message) {
   this.message = 'HttpRequest Error: ' + (message || '');
@@ -7,7 +10,7 @@ HttpRequestError.prototype = new Error();
 HttpRequestError.prototype.name = "HttpRequest Error";
 
 function HttpRequest(createXhr) {
-  if (!isFunction(createXhr)) {
+  if (!utilities.isFunction(createXhr)) {
     throw new HttpRequestError('Missing XMLHttpRequest factory method');
   }
 
@@ -19,9 +22,9 @@ HttpRequest.prototype.run = function (method, url, callback, options) {
   var timeout, timeoutId;
   var xhr = this.createXhr();
   options = options || {};
-  timeout = isNumber(options.timeout) ? options.timeout : 0;
+  timeout = utilities.isNumber(options.timeout) ? options.timeout : 0;
 
-  xhr.open(method, urlParts(url).href, true);
+  xhr.open(method, urlUtils.urlParts(url).href, true);
 
   if (options.headers) {
     setHeaders(xhr, options.headers);
@@ -52,7 +55,7 @@ HttpRequest.prototype.run = function (method, url, callback, options) {
       xhr.status = 200;
     }
 
-    if (isDefined(timeoutId)) {
+    if (utilities.isDefined(timeoutId)) {
       clearTimeout(timeoutId);
       timeoutId = undefined;
     }
@@ -85,22 +88,22 @@ HttpRequest.prototype.run = function (method, url, callback, options) {
   }
 
   function sanityCheck(url, callback, options) {
-    if (!isString(url) || isEmptyString(url)) {
+    if (!utilities.isString(url) || utilities.isEmptyString(url)) {
       throw new HttpRequestError("Invalid url '" + url + "'");
     }
 
-    if (!isFunction(callback)) {
+    if (!utilities.isFunction(callback)) {
       throw new HttpRequestError("Invalid handler '" + callback + "' for the http request");
     }
 
-    if (isDefined(options) && !isObject(options)) {
+    if (utilities.isDefined(options) && !utilities.isObject(options)) {
       throw new HttpRequestError("Invalid options map '" + options + "'");
     }
   }
 
   function setHeaders(xhr, headers) {
-    forEach(headers, function (value, key) {
-      if (isDefined(value)) {
+    utilities.forEach(headers, function (value, key) {
+      if (utilities.isDefined(value)) {
         xhr.setRequestHeader(key, value);
       }
     });
@@ -137,3 +140,5 @@ function createXhr() {
 }
 
 var http = new HttpRequest(createXhr);
+
+module.exports = http;

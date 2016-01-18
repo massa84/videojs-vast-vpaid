@@ -1,3 +1,14 @@
+'use strict';
+
+var VPAIDAdUnitWrapper = require('./VPAIDAdUnitWrapper');
+var VPAIDHTML5Tech = require('./VPAIDHTML5Tech');
+var VPAIDFlashTech = require('./VPAIDFlashTech');
+
+var async = require('../../utils/async');
+var dom = require('../../utils/dom');
+var playerUtils = require('../../utils/playerUtils');
+var utilities = require('../../utils/utilityFunctions');
+
 function VPAIDIntegrator(player, settings) {
   if (!(this instanceof VPAIDIntegrator)) {
     return new VPAIDIntegrator(player);
@@ -38,7 +49,7 @@ VPAIDIntegrator.prototype.playAd = function playVPaidAd(vastResponse, callback) 
   var tech;
   var player = this.player;
 
-  callback = callback || noop;
+  callback = callback || utilities.noop;
   if (!(vastResponse instanceof VASTResponse)) {
     return callback(new VASTError('on VASTIntegrator.playAd, missing required VASTResponse'));
   }
@@ -287,7 +298,7 @@ VPAIDIntegrator.prototype._setupEvents = function (adUnit, vastResponse, next) {
     player.trigger('vpaid.AdClickThru');
     var url = data.url;
     var playerHandles = data.playerHandles;
-    var clickThruUrl = isNotEmptyString(url) ? url : generateClickThroughURL(vastResponse.clickThrough);
+    var clickThruUrl = utilities.isNotEmptyString(url) ? url : generateClickThroughURL(vastResponse.clickThrough);
 
     tracker.trackClick();
     if (playerHandles && clickThruUrl) {
@@ -344,7 +355,7 @@ VPAIDIntegrator.prototype._setupEvents = function (adUnit, vastResponse, next) {
   });
 
   var updateViewSize = resizeAd.bind(this, player, adUnit, this.VIEW_MODE);
-  var updateViewSizeThrottled = throttle(updateViewSize, 100);
+  var updateViewSizeThrottled = utilities.throttle(updateViewSize, 100);
   var autoResize = this.settings.autoResize;
 
   if (autoResize) {
@@ -371,11 +382,11 @@ VPAIDIntegrator.prototype._setupEvents = function (adUnit, vastResponse, next) {
 
   /*** Local Functions ***/
   function pauseAdUnit() {
-    adUnit.pauseAd(noop);
+    adUnit.pauseAd(utilities.noop);
   }
 
   function resumeAdUnit() {
-    adUnit.resumeAd(noop);
+    adUnit.resumeAd(utilities.noop);
   }
 };
 
@@ -420,7 +431,7 @@ VPAIDIntegrator.prototype._addSkipButton = function (adUnit, vastResponse, next)
     skipButton.innerHTML = "Skip ad";
 
     skipButton.onclick = function (e) {
-      adUnit.skipAd(noop);//We skip the adUnit
+      adUnit.skipAd(utilities.noop);//We skip the adUnit
 
       //We prevent event propagation to avoid problems with the clickThrough and so on
       if (window.Event.prototype.stopPropagation !== undefined) {

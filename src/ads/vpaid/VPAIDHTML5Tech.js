@@ -1,3 +1,10 @@
+'use strict';
+
+var VPAIDHTML5Client = require('VPAIDHTML5Client/js/VPAIDHTML5Client');
+
+var utilities = require('../../utils/utilityFunctions');
+var dom = require('../../utils/dom');
+
 function VPAIDHTML5Tech(mediaFile) {
 
   if(!(this instanceof VPAIDHTML5Tech)) {
@@ -14,14 +21,14 @@ function VPAIDHTML5Tech(mediaFile) {
   this.mediaFile = mediaFile;
 
   function sanityCheck(mediaFile) {
-      if (!mediaFile || !isString(mediaFile.src)) {
+      if (!mediaFile || !utilities.isString(mediaFile.src)) {
         throw new VASTError(VPAIDHTML5Tech.INVALID_MEDIA_FILE);
       }
   }
 }
 
 VPAIDHTML5Tech.supports = function (type) {
-  return !isOldIE() && type === 'application/javascript';
+  return !utilities.isOldIE() && type === 'application/javascript';
 };
 
 VPAIDHTML5Tech.prototype.loadAdUnit = function loadAdUnit(containerEl, videoEl, callback) {
@@ -41,7 +48,7 @@ VPAIDHTML5Tech.prototype.loadAdUnit = function loadAdUnit(containerEl, videoEl, 
       throw new VASTError(VPAIDHTML5Tech.INVALID_DOM_CONTAINER_EL);
     }
 
-    if (!isFunction(cb)) {
+    if (!utilities.isFunction(cb)) {
       throw new VASTError(VPAIDHTML5Tech.MISSING_CALLBACK);
     }
   }
@@ -52,7 +59,7 @@ VPAIDHTML5Tech.prototype.unloadAdUnit = function unloadAdUnit() {
     try {
       this.vpaidHTMLClient.destroy();
     } catch(e) {
-      if (console && isFunction(console.log)) {
+      if (console && utilities.isFunction(console.log)) {
         console.log('VAST ERROR: trying to unload the VPAID adunit');
       }
     }
@@ -72,3 +79,4 @@ VPAIDHTML5Tech.INVALID_DOM_CONTAINER_EL = PREFIX + ', invalid container HtmlElem
 VPAIDHTML5Tech.INVALID_DOM_VIDEO_EL = PREFIX + ', invalid HTMLVideoElement';
 VPAIDHTML5Tech.MISSING_CALLBACK = PREFIX + ', missing valid callback';
 
+module.exports = VPAIDHTML5Tech;

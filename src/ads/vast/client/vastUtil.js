@@ -1,11 +1,14 @@
-"use strict";
+'use strict';
+
+var Creative = require('./Creative');
+var utilities = require('../../../utils/utilityFunctions');
 
 var vastUtil = {
 
   track: function track(URLMacros, variables) {
     var sources = vastUtil.parseURLMacros(URLMacros, variables);
     var trackImgs = [];
-    sources.forEach(function (src) {
+    sources.utilities.forEach(function (src) {
       var img = new Image();
       img.src = src;
       trackImgs.push(img);
@@ -22,7 +25,7 @@ var vastUtil = {
       variables["CACHEBUSTING"] = Math.round(Math.random() * 1.0e+10);
     }
 
-    URLMacros.forEach(function (URLMacro) {
+    URLMacros.utilities.forEach(function (URLMacro) {
       parsedURLs.push(vastUtil._parseURLMacro(URLMacro, variables));
     });
 
@@ -42,7 +45,7 @@ var vastUtil = {
   _parseURLMacro: function parseMacro(URLMacro, variables) {
     variables = variables || {};
 
-    forEach(variables, function (value, key) {
+    utilities.forEach(variables, function (value, key) {
       URLMacro = URLMacro.replace(new RegExp("\\[" + key + "\\\]", 'gm'), value);
     });
 
@@ -53,7 +56,7 @@ var vastUtil = {
     var durationRegex = /(\d\d):(\d\d):(\d\d)(\.(\d\d\d))?/;
     var match, durationInMs;
 
-    if (isString(durationStr)) {
+    if (utilities.isString(durationStr)) {
       match = durationStr.match(durationRegex);
       if (match) {
         durationInMs = parseHoursToMs(match[1]) + parseMinToMs(match[2]) + parseSecToMs(match[3]) + parseInt(match[5] || 0);
@@ -78,9 +81,9 @@ var vastUtil = {
 
   parseImpressions: function parseImpressions(impressions) {
     if (impressions) {
-      impressions = isArray(impressions) ? impressions : [impressions];
-      return transformArray(impressions, function (impression) {
-        if (isNotEmptyString(impression.keyValue)) {
+      impressions = utilities.isArray(impressions) ? impressions : [impressions];
+      return utilities.transformArray(impressions, function (impression) {
+        if (utilities.isNotEmptyString(impression.keyValue)) {
           return impression.keyValue;
         }
         return undefined;
@@ -92,9 +95,9 @@ var vastUtil = {
   parseCreatives: function parseCreatives(creativesJTree) {
     var creatives = [];
     var creativesData;
-    if (isDefined(creativesJTree) && isDefined(creativesJTree.creative)) {
-      creativesData = isArray(creativesJTree.creative) ? creativesJTree.creative : [creativesJTree.creative];
-      creativesData.forEach(function (creative) {
+    if (utilities.isDefined(creativesJTree) && utilities.isDefined(creativesJTree.creative)) {
+      creativesData = utilities.isArray(creativesJTree.creative) ? creativesJTree.creative : [creativesJTree.creative];
+      creativesData.utilities.forEach(function (creative) {
         creatives.push(new Creative(creative));
       });
     }
@@ -111,7 +114,7 @@ var vastUtil = {
     seconds = (progress / 1000) % 60;
     seconds = Math.floor(seconds);
     milliseconds = progress % 1000;
-    return toFixedDigits(hours, 2) + ':' + toFixedDigits(minutes, 2) + ':' + toFixedDigits(seconds, 2) + '.' + toFixedDigits(milliseconds, 3);
+    return utilities.toFixedDigits(hours, 2) + ':' + utilities.toFixedDigits(minutes, 2) + ':' + utilities.toFixedDigits(seconds, 2) + '.' + utilities.toFixedDigits(milliseconds, 3);
   },
 
   parseOffset:   function parseOffset(offset, duration) {
@@ -142,3 +145,6 @@ var vastUtil = {
     return !!mediaFile && mediaFile.apiFramework === 'VPAID';
   }
 };
+
+
+module.exports = vastUtil;

@@ -285,3 +285,40 @@ function isIPhone() {
 function isAndroid() {
   return /Android/.test(_UA);
 }
+
+module.exports = {
+  noop: noop,
+  isNull: isNull,
+  isDefined: isDefined,
+  isUndefined: isUndefined,
+  isObject: isObject,
+  isFunction: isFunction,
+  isNumber: isNumber,
+  isWindow: isWindow,
+  isArray: isArray,
+  isArrayLike: isArrayLike,
+  isString: isString,
+  isEmptyString: isEmptyString,
+  isNotEmptyString: isNotEmptyString,
+  arrayLikeObjToArray: arrayLikeObjToArray,
+  forEach: forEach,
+  snake_case: snake_case,
+  isValidEmail: isValidEmail,
+  extend: extend,
+  capitalize: capitalize,
+  decapitalize: decapitalize,
+  transformArray: transformArray,
+  toFixedDigits: toFixedDigits,
+  throttle: throttle,
+  debounce: debounce,
+  designed: designed,
+  treeSearch: treeSearch,
+  echoFn: echoFn,
+  isISO8601: isISO8601,
+  isOldIE: isOldIE,
+  getInternetExplorerVersion: getInternetExplorerVersion,
+  isIDevice: isIDevice,
+  isMobile: isMobile,
+  isIPhone: isIPhone,
+  isAndroid: isAndroid
+};

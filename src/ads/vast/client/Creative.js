@@ -1,3 +1,6 @@
+'use strict';
+
+var Linear = require('./Linear');
 
 function Creative(creativeJTree) {
   if(!(this instanceof Creative)) {
@@ -13,3 +16,5 @@ function Creative(creativeJTree) {
     this.linear = new Linear(creativeJTree.linear);
   }
 }
+
+module.exports = Creative;

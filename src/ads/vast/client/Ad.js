@@ -1,3 +1,8 @@
+'use strict';
+
+var InLine = require('./Inline');
+var Wrapper = require('./Wrapper');
+
 function Ad(adJTree) {
   if (!(this instanceof Ad)) {
     return new Ad(adJTree);
@@ -14,3 +19,5 @@ function Ad(adJTree) {
     this.wrapper = new Wrapper(adJTree.wrapper);
   }
 }
+
+module.exports = Ad;

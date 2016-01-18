@@ -1,3 +1,13 @@
+'use strict';
+
+var VASTError = require('./VASTError');
+var vastUtil = require('./vastUtil');
+
+var async = require('../../../utils/async');
+var http = require('../../../utils/http');
+var utilities = require('../../../utils/utilityFunctions');
+var xml = require('../../../utils/xml');
+
 function VASTClient(options) {
   if (!(this instanceof VASTClient)) {
     return new VASTClient(options);
@@ -7,7 +17,7 @@ function VASTClient(options) {
   };
 
   options = options || {};
-  this.settings = extend({}, options, defaultOptions);
+  this.settings = utilities.extend({}, options, defaultOptions);
   this.errorURLMacros = [];
 }
 
@@ -16,7 +26,7 @@ VASTClient.prototype.getVASTResponse = function getVASTResponse(adTagUrl, callba
 
   var error = sanityCheck(adTagUrl, callback);
   if (error) {
-    if (isFunction(callback)) {
+    if (utilities.isFunction(callback)) {
       return callback(error);
     }
     throw error;
@@ -43,7 +53,7 @@ VASTClient.prototype.getVASTResponse = function getVASTResponse(adTagUrl, callba
       return new VASTError('on VASTClient.getVASTResponse, missing ad tag URL');
     }
 
-    if (!isFunction(cb)) {
+    if (!utilities.isFunction(cb)) {
       return new VASTError('on VASTClient.getVASTResponse, missing callback function');
     }
   }
@@ -53,7 +63,7 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
   var that = this;
 
   getAdWaterfall(adTagUrl, function (error, vastTree) {
-    var waterfallAds = vastTree && isArray(vastTree.ads) ? vastTree.ads : null;
+    var waterfallAds = vastTree && utilities.isArray(vastTree.ads) ? vastTree.ads : null;
     if (error) {
       that._trackError(error, waterfallAds);
       return callback(error, waterfallAds);
@@ -89,7 +99,7 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
     var vastTree;
     try {
       vastTree = xml.toJXONTree(xmlStr);
-      vastTree.ads = isArray(vastTree.ad) ? vastTree.ad : [vastTree.ad];
+      vastTree.ads = utilities.isArray(vastTree.ad) ? vastTree.ad : [vastTree.ad];
       callback(validateVASTTree(vastTree), vastTree);
     } catch (e) {
       callback(new VASTError("on VASTClient.getVASTAd.buildVastWaterfall, error parsing xml", 100), null);
@@ -117,7 +127,7 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
 
     async.waterfall([
       function (next) {
-        if (isString(adTagUrl)) {
+        if (utilities.isString(adTagUrl)) {
           requestVASTAd(adTagUrl, next);
         } else {
           next(null, adTagUrl);
@@ -189,7 +199,7 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
 
 VASTClient.prototype._requestVASTXml = function requestVASTXml(adTagUrl, callback) {
   try {
-    if (isFunction(adTagUrl)) {
+    if (utilities.isFunction(adTagUrl)) {
       adTagUrl(requestHandler);
     } else {
       http.get(adTagUrl, requestHandler, {
@@ -203,7 +213,7 @@ VASTClient.prototype._requestVASTXml = function requestVASTXml(adTagUrl, callbac
   /*** Local functions ***/
   function requestHandler(error, response, status) {
     if (error) {
-      var errMsg = isDefined(status) ?
+      var errMsg = utilities.isDefined(status) ?
       "on VASTClient.requestVastXML, HTTP request error with status '" + status + "'" :
         "on VASTClient.requestVastXML, Error getting the the VAST XML with he passed adTagXML fn";
       return callback(new VASTError(errMsg, 301), null);
@@ -222,7 +232,7 @@ VASTClient.prototype._buildVASTResponse = function buildVASTResponse(adsChain) {
 
   //*** Local function ****
   function addAdsToResponse(response, ads) {
-    ads.forEach(function (ad) {
+    ads.utilities.forEach(function (ad) {
       response.addAd(ad);
     });
   }
@@ -239,8 +249,8 @@ VASTClient.prototype._buildVASTResponse = function buildVASTResponse(adsChain) {
     }
 
     if (progressEvents) {
-      progressEvents.forEach(function (progressEvent) {
-        if (!isNumber(progressEvent.offset)) {
+      progressEvents.utilities.forEach(function (progressEvent) {
+        if (!utilities.isNumber(progressEvent.offset)) {
           throw new VASTError("on VASTClient._buildVASTResponse, missing or wrong offset attribute on progress tracking event", 101);
         }
       });
@@ -249,12 +259,12 @@ VASTClient.prototype._buildVASTResponse = function buildVASTResponse(adsChain) {
 };
 
 VASTClient.prototype._trackError = function (error, adChain) {
-  if (!isArray(adChain) || adChain.length === 0) { //There is nothing to track
+  if (!utilities.isArray(adChain) || adChain.length === 0) { //There is nothing to track
     return;
   }
 
   var errorURLMacros = [];
-  adChain.forEach(addErrorUrlMacros);
+  adChain.utilities.forEach(addErrorUrlMacros);
   vastUtil.track(errorURLMacros, {ERRORCODE: error.code || 900});  //900 <== Undefined error
 
   /*** Local functions  ***/
@@ -268,3 +278,5 @@ VASTClient.prototype._trackError = function (error, adChain) {
     }
   }
 };
+
+module.exports = VASTClient;

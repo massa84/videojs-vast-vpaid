@@ -1,4 +1,7 @@
 //Small subset of async
+
+var utilities = require('./utilityFunctions');
+
 var async = {};
 
 async.setImmediate = function (fn) {
@@ -24,7 +27,7 @@ async.iterator = function (tasks) {
 
 async.waterfall = function (tasks, callback) {
   callback = callback || function () { };
-  if (!isArray(tasks)) {
+  if (!utilities.isArray(tasks)) {
     var err = new Error('First argument to waterfall must be an array of functions');
     return callback(err);
   }
@@ -57,16 +60,16 @@ async.waterfall = function (tasks, callback) {
 };
 
 async.when = function (condition, callback) {
-  if (!isFunction(callback)) {
+  if (!utilities.isFunction(callback)) {
     throw new Error("async.when error: missing callback argument");
   }
 
-  var isAllowed = isFunction(condition) ? condition : function () {
+  var isAllowed = utilities.isFunction(condition) ? condition : function () {
     return !!condition;
   };
 
   return function () {
-    var args = arrayLikeObjToArray(arguments);
+    var args = utilities.arrayLikeObjToArray(arguments);
     var next = args.pop();
 
     if (isAllowed.apply(null, args)) {
@@ -78,4 +81,5 @@ async.when = function (condition, callback) {
   };
 };
 
+module.exports = async;
 
