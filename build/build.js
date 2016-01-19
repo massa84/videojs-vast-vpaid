@@ -1,20 +1,22 @@
-var gulp = require('gulp');
-var jshint = require('gulp-jshint');
-var runSequence = require('run-sequence');
-var config = require('./config');
-var path = require('path');
+var babelify    = require('babelify');
+var browserify  = require('browserify');
+var del         = require('del');
+var gulp        = require('gulp');
+var gulpif      = require('gulp-if');
+var jshint      = require('gulp-jshint');
 var mergeStream = require('merge-stream');
-var gulpif = require('gulp-if');
-var minifyCSS = require('gulp-minify-css');
-var concat = require('gulp-concat');
-var uglify = require("gulp-uglify");
-var flatten = require('gulp-flatten');
-var rename = require('gulp-rename');
-var del = require('del');
-var sourcemaps = require('gulp-sourcemaps');
-var BuildTaskDoc = require('./BuildTaskDoc');
+var minifyCSS   = require('gulp-minify-css');
+var path        = require('path');
+var rename      = require('gulp-rename');
+var runSequence = require('run-sequence');
+var source      = require('vinyl-source-stream');
+var sourcemaps  = require('gulp-sourcemaps');
+var uglify      = require("gulp-uglify");
 
-var assetsDevPath = path.join(config.DEV, '/');
+var BuildTaskDoc = require('./BuildTaskDoc');
+var config       = require('./config');
+
+var assetsDevPath  = path.join(config.DEV, '/');
 var assetsDistPath = path.join(config.DIST, '/');
 
 gulp.task('build', function (callback) {
@@ -43,10 +45,7 @@ gulp.task('clean', function (cb) {
   del(cleanDirs, {force: true}, cb);
 });
 
-var browserify = require('browserify');
-var babelify = require('babelify');
-var source = require('vinyl-source-stream');
-var mergeStream = require('merge-stream');
+
 
 gulp.task('build-scripts', function(done) {
   var buildProcesses = config.versions.map(function(version) {

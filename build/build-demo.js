@@ -1,18 +1,18 @@
-var gulp = require('gulp');
-var runSequence = require('run-sequence');
-var path = require('path');
-var config = require('./config');
-var template = require('gulp-template');
-var globUtils = require('./globUtils');
-var flatten = require('gulp-flatten');
-var BuildTaskDoc = require('./BuildTaskDoc');
-var source     = require('vinyl-source-stream');
-var browserify = require('browserify');
-var rename = require('gulp-rename');
-var mergeStream = require('merge-stream');
-var sass = require('gulp-sass');
+var browserify   = require('browserify');
+var flatten      = require('gulp-flatten');
+var gulp         = require('gulp');
+var mergeStream  = require('merge-stream');
+var path         = require('path');
+var rename       = require('gulp-rename');
+var runSequence  = require('run-sequence');
+var sass         = require('gulp-sass');
+var source       = require('vinyl-source-stream');
+var template     = require('gulp-template');
 
-gulp.task('build-demo', function (callback) {
+var BuildTaskDoc = require('./BuildTaskDoc');
+var config       = require('./config');
+
+gulp.task('build-demo', function (done) {
   runSequence(
     'build',
     [
@@ -27,7 +27,7 @@ gulp.task('build-demo', function (callback) {
         console.log(error.message.red);
       }
       console.log('BUILD DEMO FINISHED SUCCESSFULLY'.green);
-      callback();
+      done();
     });
 });
 
@@ -47,7 +47,8 @@ gulp.task('build-demo-page', function () {
 
     return gulp.src(demoPage)
       .pipe(template({
-        version: version
+        version: version,
+        otherVersions: config.versions.filter(function(v) { return v !== version})
       }))
       .pipe(rename('index_'+version+'.html'))
       .pipe(gulp.dest(config.DEV));
@@ -87,6 +88,7 @@ gulp.task('build-demo-videojs', function () {
     return gulp.src(config.versionsMap[version] + '**/*')
       .pipe(gulp.dest(path.join(assetsDistPath, '/videojs_' + version + '/')));
   });
+
   return mergeStream.apply(this, buildProcesses);
 });
 

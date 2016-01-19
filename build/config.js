@@ -8,8 +8,8 @@ var knownOptions = {
 var options = parseArgs(process.argv.slice(2), knownOptions);
 
 var videoJsVersionsMap = {
-  '5': 'bower_components/videojs_5/dist/',
-  '4': 'bower_components/videojs_4/dist/video-js/'
+  '4': 'bower_components/videojs_4/dist/video-js/',
+  '5': 'bower_components/videojs_5/dist/'
 };
 
 module.exports = {

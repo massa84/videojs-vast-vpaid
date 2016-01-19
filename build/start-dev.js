@@ -1,8 +1,8 @@
-var gulp = require( "gulp" );
-var supervisor = require( "gulp-supervisor" );
-var BuildTaskDoc = require('./BuildTaskDoc');
+var gulp        = require( "gulp" );
+var supervisor  = require( "gulp-supervisor" );
 var runSequence = require('run-sequence');
 
+var BuildTaskDoc = require('./BuildTaskDoc');
 
 gulp.task( "start-dev", function (callback) {
   runSequence(

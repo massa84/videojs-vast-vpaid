@@ -1,15 +1,15 @@
-var gulp = require('gulp');
-var karma = require('karma').server;
-var config = require('./config');
+var gulp         = require('gulp');
+var karma        = require('karma').server;
+
+var config       = require('./config');
 var BuildTaskDoc = require('./BuildTaskDoc');
-var TASK_NAME = 'test';
 
 /**
  * Run test once and exit
- *//*
+ */
 var testTasks = [];
 config.versions.forEach(function(version) {
-  var testTask = TASK_NAME + '-' + version;
+  var testTask = 'test_' + version;
   var buildConfig = config.build(version);
 
   gulp.task(testTask, function (done) {
@@ -34,6 +34,6 @@ config.versions.forEach(function(version) {
   testTasks.push(testTask);
 })
 
-gulp.task(TASK_NAME, testTasks);
-*/
-module.exports = new BuildTaskDoc(TASK_NAME, "Starts karma on 'autowatch' mode with all the libs, \nsources and tests of the player", 6.1);
+gulp.task('test', testTasks);
+
+module.exports = new BuildTaskDoc('test', "Starts karma on 'autowatch' mode with all the libs, \nsources and tests of the player", 6.1);
