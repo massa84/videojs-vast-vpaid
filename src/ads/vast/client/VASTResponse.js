@@ -1,5 +1,6 @@
 'use strict';
 
+var Ad = require('./Ad');
 var VideoClicks = require('./VideoClicks');
 var Linear = require('./Linear');
 var InLine = require('./InLine');
@@ -8,6 +9,7 @@ var Wrapper = require('./Wrapper');
 var utilities = require('../../../utils/utilityFunctions');
 var xml = require('../../../utils/xml');
 
+window.InLine__A = InLine;
 function VASTResponse() {
   if (!(this instanceof VASTResponse)) {
     return new VASTResponse();
@@ -29,7 +31,6 @@ function VASTResponse() {
 
 VASTResponse.prototype.addAd = function (ad) {
   var inLine, wrapper;
-
   if (ad instanceof Ad) {
     inLine = ad.inLine;
     wrapper = ad.wrapper;
@@ -76,7 +77,7 @@ VASTResponse.prototype._addTrackingEvents = function (trackingEvents) {
 
   if (trackingEvents) {
     trackingEvents = utilities.isArray(trackingEvents) ? trackingEvents : [trackingEvents];
-    trackingEvents.utilities.forEach(function (trackingEvent) {
+    trackingEvents.forEach(function (trackingEvent) {
       if (!eventsMap[trackingEvent.name]) {
         eventsMap[trackingEvent.name] = [];
       }
@@ -141,7 +142,7 @@ VASTResponse.prototype._addInLine = function (inLine) {
     this._addErrorTrackUrl(inLine.error);
     this._addImpressions(inLine.impressions);
 
-    inLine.creatives.utilities.forEach(function (creative) {
+    inLine.creatives.forEach(function (creative) {
       if (creative.linear) {
         that._addLinear(creative.linear);
       }
@@ -156,7 +157,7 @@ VASTResponse.prototype._addWrapper = function (wrapper) {
     this._addErrorTrackUrl(wrapper.error);
     this._addImpressions(wrapper.impressions);
 
-    wrapper.creatives.utilities.forEach(function (creative) {
+    wrapper.creatives.forEach(function (creative) {
       var linear = creative.linear;
       if (linear) {
         that._addVideoClicks(linear.videoClicks);
@@ -172,7 +173,7 @@ VASTResponse.prototype.hasLinear = function(){
 };
 
 function appendToArray(array, items) {
-  items.utilities.forEach(function (item) {
+  items.forEach(function (item) {
     array.push(item);
   });
 }

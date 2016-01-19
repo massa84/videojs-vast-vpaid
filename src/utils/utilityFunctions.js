@@ -311,7 +311,6 @@ module.exports = {
   toFixedDigits: toFixedDigits,
   throttle: throttle,
   debounce: debounce,
-  designed: designed,
   treeSearch: treeSearch,
   echoFn: echoFn,
   isISO8601: isISO8601,

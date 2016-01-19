@@ -1,6 +1,6 @@
 'use strict';
 
-var InLine = require('./Inline');
+var InLine = require('./InLine');
 var Wrapper = require('./Wrapper');
 
 function Ad(adJTree) {

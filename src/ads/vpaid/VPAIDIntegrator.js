@@ -1,5 +1,10 @@
 'use strict';
 
+var VASTError = require('../vast/client/VASTError');
+var VASTResponse = require('../vast/client/VASTResponse');
+var VASTTracker = require('../vast/client/VASTTracker');
+var vastUtil = require('../vast/client/vastUtil');
+
 var VPAIDAdUnitWrapper = require('./VPAIDAdUnitWrapper');
 var VPAIDHTML5Tech = require('./VPAIDHTML5Tech');
 var VPAIDFlashTech = require('./VPAIDFlashTech');
@@ -535,3 +540,5 @@ function logError(error) {
     console.log('ERROR: ' + error.message, error);
   }
 }
+
+module.exports = VPAIDIntegrator;

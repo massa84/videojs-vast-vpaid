@@ -17,7 +17,7 @@ function VideoClicks(videoClickJTree) {
     var clickTrackings = [];
     if (trackingData) {
       trackingData = utilities.isArray(trackingData) ? trackingData : [trackingData];
-      trackingData.utilities.forEach(function (clickTrackingData) {
+      trackingData.forEach(function (clickTrackingData) {
         clickTrackings.push(xml.keyValue(clickTrackingData));
       });
     }

@@ -1,5 +1,7 @@
 'use strict';
 
+var VASTError = require('../vast/client/VASTError');
+
 var utilities = require('../../utils/utilityFunctions');
 
 function VPAIDAdUnitWrapper(vpaidAdUnit, opts) {
@@ -203,7 +205,7 @@ VPAIDAdUnitWrapper.prototype.skipAd = function (cb) {
   'adVolume',
   'adCompanions',
   'adIcons'
-].utilities.forEach(function (property) {
+].forEach(function (property) {
   var getterName = 'get' + utilities.capitalize(property);
 
   VPAIDAdUnitWrapper.prototype[getterName] = function (cb) {

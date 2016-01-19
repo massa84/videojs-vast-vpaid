@@ -12,25 +12,28 @@
  * @param {Object=} options
  * @constructor
  */
-var BlackPoster = {
-  /** @constructor */
-  init: function init(player, options) {
-    vjs.Component.call(this, player, options);
+var element = document.createElement('div');
+element.className = 'vjs-black-poster';
 
-    var posterImg = player.getChild('posterImage');
+var BlackPosterFactory = function(baseComponent) {
+  return {
+    /** @constructor */
+    init: function init(player, options) {
+      options.el = element;
+      baseComponent.call(this, player, options);
+      var posterImg = player.getChild('posterImage');
 
-    //We need to do it asynchronously to be sure that the black poster el is on the dom.
-    setTimeout(function() {
-      if(posterImg) {
-        player.el().insertBefore(this.el(), posterImg.el());
-      }
-    }.bind(this), 0);
-  },
-  createEl: function createEl(){
-    return vjs.createEl('div', {
-      className: 'vjs-black-poster'
-    });
-  }
+      //We need to do it asynchronously to be sure that the black poster el is on the dom.
+      setTimeout(function() {
+        if(posterImg) {
+          player.el().insertBefore(element, posterImg.el());
+        }
+      }.bind(this), 0);
+    },
+    el: function getElement() {
+      return element;
+    }
+  };
 };
 
-module.exports = BlackPoster;
+module.exports = BlackPosterFactory;

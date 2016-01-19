@@ -1,5 +1,7 @@
 'use strict';
 
+var VASTError = require('../vast/client/VASTError');
+
 var VPAIDHTML5Client = require('VPAIDHTML5Client/js/VPAIDHTML5Client');
 
 var utilities = require('../../utils/utilityFunctions');

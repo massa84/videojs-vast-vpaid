@@ -8,7 +8,7 @@ var vastUtil = {
   track: function track(URLMacros, variables) {
     var sources = vastUtil.parseURLMacros(URLMacros, variables);
     var trackImgs = [];
-    sources.utilities.forEach(function (src) {
+    sources.forEach(function (src) {
       var img = new Image();
       img.src = src;
       trackImgs.push(img);
@@ -25,7 +25,7 @@ var vastUtil = {
       variables["CACHEBUSTING"] = Math.round(Math.random() * 1.0e+10);
     }
 
-    URLMacros.utilities.forEach(function (URLMacro) {
+    URLMacros.forEach(function (URLMacro) {
       parsedURLs.push(vastUtil._parseURLMacro(URLMacro, variables));
     });
 
@@ -97,7 +97,7 @@ var vastUtil = {
     var creativesData;
     if (utilities.isDefined(creativesJTree) && utilities.isDefined(creativesJTree.creative)) {
       creativesData = utilities.isArray(creativesJTree.creative) ? creativesJTree.creative : [creativesJTree.creative];
-      creativesData.utilities.forEach(function (creative) {
+      creativesData.forEach(function (creative) {
         creatives.push(new Creative(creative));
       });
     }

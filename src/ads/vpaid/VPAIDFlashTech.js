@@ -1,5 +1,9 @@
 'use strict';
 
+var VASTError = require('../vast/client/VASTError');
+
+var VPAIDFLASHClient = require('VPAIDFLASHClient/js/VPAIDFLASHClient');
+
 var utilities = require('../../utils/utilityFunctions');
 var dom = require('../../utils/dom');
 

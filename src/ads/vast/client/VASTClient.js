@@ -1,6 +1,9 @@
 'use strict';
 
+var Ad = require('./Ad');
+var Linear = require('./Linear');
 var VASTError = require('./VASTError');
+var VASTResponse = require('./VASTResponse');
 var vastUtil = require('./vastUtil');
 
 var async = require('../../../utils/async');
@@ -99,7 +102,15 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
     var vastTree;
     try {
       vastTree = xml.toJXONTree(xmlStr);
-      vastTree.ads = utilities.isArray(vastTree.ad) ? vastTree.ad : [vastTree.ad];
+
+      if(utilities.isArray(vastTree.ad)) {
+        vastTree.ads = utilities.isArray(vastTree.ad)
+      } else if(vastTree.ad){
+        vastTree.ads = [vastTree.ad];
+      } else {
+        vastTree.ads = [];
+      }
+
       callback(validateVASTTree(vastTree), vastTree);
     } catch (e) {
       callback(new VASTError("on VASTClient.getVASTAd.buildVastWaterfall, error parsing xml", 100), null);
@@ -109,7 +120,7 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
   function validateVASTTree(vastTree) {
     var vastVersion = xml.attr(vastTree, 'version');
 
-    if (!vastTree.ad) {
+    if (!vastTree.ads.length) {
       return new VASTError('on VASTClient.getVASTAd.validateVASTTree, no Ad in VAST tree', 303);
     }
 
@@ -232,7 +243,7 @@ VASTClient.prototype._buildVASTResponse = function buildVASTResponse(adsChain) {
 
   //*** Local function ****
   function addAdsToResponse(response, ads) {
-    ads.utilities.forEach(function (ad) {
+    ads.forEach(function (ad) {
       response.addAd(ad);
     });
   }
@@ -249,7 +260,7 @@ VASTClient.prototype._buildVASTResponse = function buildVASTResponse(adsChain) {
     }
 
     if (progressEvents) {
-      progressEvents.utilities.forEach(function (progressEvent) {
+      progressEvents.forEach(function (progressEvent) {
         if (!utilities.isNumber(progressEvent.offset)) {
           throw new VASTError("on VASTClient._buildVASTResponse, missing or wrong offset attribute on progress tracking event", 101);
         }
@@ -264,7 +275,7 @@ VASTClient.prototype._trackError = function (error, adChain) {
   }
 
   var errorURLMacros = [];
-  adChain.utilities.forEach(addErrorUrlMacros);
+  adChain.forEach(addErrorUrlMacros);
   vastUtil.track(errorURLMacros, {ERRORCODE: error.code || 900});  //900 <== Undefined error
 
   /*** Local functions  ***/

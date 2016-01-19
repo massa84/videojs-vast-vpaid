@@ -2,6 +2,7 @@
 
 var VASTClient = require('../ads/vast/client/VASTClient');
 var VASTError = require('../ads/vast/client/VASTError');
+var vastUtil = require('../ads/vast/client/vastUtil');
 
 var VASTIntegrator = require('../ads/vast/client/VASTIntegrator');
 var VPAIDIntegrator = require('../ads/vpaid/VPAIDIntegrator');
@@ -256,6 +257,7 @@ module.exports = function VASTPlugin(options) {
       if (adFinished || player.controlBar.getChild('AdsLabel')) {
         return;
       }
+
       player.controlBar.addChild('AdsLabel');
     }
 

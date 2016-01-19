@@ -43,7 +43,7 @@ playerUtils.getPlayerSnapshot = function getPlayerSnapshot(player) {
     }
 
     var suppressedTracks = [];
-    tracks.utilities.forEach(function (track) {
+    tracks.forEach(function (track) {
       suppressedTracks.push({
         track: track,
         mode: track.mode
@@ -131,7 +131,7 @@ playerUtils.restorePlayerSnapshot = function restorePlayerSnapshot(player, snaps
 
   function restoreTracks() {
     var suppressedTracks = snapshot.suppressedTracks;
-    suppressedTracks.utilities.forEach(function (trackSnapshot) {
+    suppressedTracks.forEach(function (trackSnapshot) {
       trackSnapshot.track.mode = trackSnapshot.mode;
     });
   }
@@ -384,12 +384,12 @@ playerUtils.once = function once(player, events, handler) {
   function listener() {
     handler.apply(null, arguments);
 
-    events.utilities.forEach(function (event) {
+    events.forEach(function (event) {
       player.off(event, listener);
     });
   }
 
-  events.utilities.forEach(function (event) {
+  events.forEach(function (event) {
     player.on(event, listener);
   });
 };

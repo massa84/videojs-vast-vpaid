@@ -142,3 +142,5 @@ xml.decode = function decodeXML(str) {
     .replace(/&lt;/g, '<')
     .replace(/&amp;/g, '&');
 };
+
+module.exports = xml;

@@ -1,28 +1,32 @@
 var dom = require('../../utils/dom');
 
-var AdsLabel = {
-  /** @constructor */
-  init: function init(player, options) {
-    vjs.Component.call(this, player, options);
+var element = document.createElement('div');
+element.className = 'vjs-ads-label vjs-control vjs-label-hidden';
+element.innerHTML = 'Advertisement';
 
-    var that = this;
+var AdsLabelFactory = function(baseComponent) {
+  return {
+    /** @constructor */
+    init: function init(player, options) {
+      options.el = element;
+      baseComponent.call(this, player, options);
 
-    // We asynchronously reposition the ads label element
-    setTimeout(function () {
-      var currentTimeComp = player.controlBar &&( player.controlBar.getChild("timerControls") || player.controlBar.getChild("currentTimeDisplay") );
-      if(currentTimeComp) {
-        player.controlBar.el().insertBefore(that.el(), currentTimeComp.el());
-      }
-      dom.removeClass(that.el(), 'vjs-label-hidden');
-    }, 0);
-  },
+      var that = this;
 
-  createEl: function createEl() {
-    return vjs.Component.prototype.createEl.call(this, 'div', {
-      className: 'vjs-ads-label vjs-control vjs-label-hidden',
-      innerHTML: 'Advertisement'
-    })
-  }
+      // We asynchronously reposition the ads label element
+      setTimeout(function () {
+        var currentTimeComp = player.controlBar &&( player.controlBar.getChild("timerControls") || player.controlBar.getChild("currentTimeDisplay") );
+        if(currentTimeComp) {
+          player.controlBar.el().insertBefore(element, currentTimeComp.el());
+        }
+        dom.removeClass(element, 'vjs-label-hidden');
+      }, 0);
+    },
+
+    el: function getElement() {
+      return element;
+    }
+  };
 };
 
-module.exports = AdsLabel;
+module.exports = AdsLabelFactory;

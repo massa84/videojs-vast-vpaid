@@ -55,7 +55,7 @@ VASTTracker.prototype.trackEvent = function trackEvent(eventName, trackOnce) {
 
     if (trackingEvents) {
       uris = [];
-      trackingEvents.utilities.forEach(function (event) {
+      trackingEvents.forEach(function (event) {
         uris.push(event.uri);
       });
     }
@@ -131,7 +131,7 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
     var pendingProgressEvts = [];
     var that = this;
 
-    trackingEvents.progress.utilities.forEach(function (evt) {
+    trackingEvents.progress.forEach(function (evt) {
       if (evt.offset <= progress) {
         that.trackURLs([evt.uri]);
       } else {
@@ -142,7 +142,7 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
   }
 
   function trackEvents() {
-    events.utilities.forEach(function (event) {
+    events.forEach(function (event) {
       this.trackEvent(event.name, event.trackOnce);
     }, this);
   }
@@ -160,7 +160,7 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
   'acceptInvitationLinear',
   'collapse',
   'expand'
-].utilities.forEach(function (eventName) {
+].forEach(function (eventName) {
     VASTTracker.prototype['track' + utilities.capitalize(eventName)] = function () {
       this.trackEvent(eventName);
     };
@@ -171,7 +171,7 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
   'skip',
   'close',
   'closeLinear'
-].utilities.forEach(function (eventName) {
+].forEach(function (eventName) {
     VASTTracker.prototype['track' + utilities.capitalize(eventName)] = function () {
       this.trackEvent(eventName, true);
     };
@@ -181,7 +181,7 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
   'firstQuartile',
   'midpoint',
   'thirdQuartile'
-].utilities.forEach(function (quartile) {
+].forEach(function (quartile) {
     VASTTracker.prototype['track' + utilities.capitalize(quartile)] = function () {
       this.quartiles[quartile].tracked = true;
       this.trackEvent(quartile, true);
