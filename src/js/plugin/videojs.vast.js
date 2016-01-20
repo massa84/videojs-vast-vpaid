@@ -270,7 +270,6 @@ module.exports = function VASTPlugin(options) {
       //IOS video clock is very unreliable and we need a 3 seconds threshold to ensure that the user forwarded/rewound the ad
       var PROGRESS_THRESHOLD = 3;
       var previousTime = 0;
-      var tech = player.el().querySelector('.vjs-tech');
       var skipad_attempts = 0;
 
       player.on('timeupdate', adTimeupdateHandler);

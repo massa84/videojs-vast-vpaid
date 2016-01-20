@@ -137,14 +137,12 @@ VPAIDIntegrator.prototype._findSupportedTech = function (vastResponse, settings)
       return new VPAIDTech(mediaFile, settings);
     }
   }
-
   return null;
 
   /*** Local functions ***/
   function findSupportedTech(mediafile) {
     var type = mediafile.type;
     var i, len, VPAIDTech;
-
     for (i = 0, len = VPAIDIntegrator.techs.length; i < len; i += 1) {
       VPAIDTech = VPAIDIntegrator.techs[i];
       if (VPAIDTech.supports(type)) {
@@ -155,7 +153,12 @@ VPAIDIntegrator.prototype._findSupportedTech = function (vastResponse, settings)
   }
 };
 
+VPAIDIntegrator.prototype._createVPAIDAdUnitWrapper = function(adUnit, src, responseTimeout) {
+  return new VPAIDAdUnitWrapper(adUnit, {src: src, responseTimeout: responseTimeout});
+};
+
 VPAIDIntegrator.prototype._loadAdUnit = function (tech, vastResponse, next) {
+  var that = this;
   var player = this.player;
   var vjsTechEl = player.el().querySelector('.vjs-tech');
   var responseTimeout = this.settings.responseTimeout || this.options.responseTimeout;
@@ -165,7 +168,7 @@ VPAIDIntegrator.prototype._loadAdUnit = function (tech, vastResponse, next) {
     }
 
     try {
-      var WrappedAdUnit = new VPAIDAdUnitWrapper(adUnit, {src: tech.mediaFile.src, responseTimeout: responseTimeout});
+      var WrappedAdUnit = that._createVPAIDAdUnitWrapper(adUnit, tech.mediaFile.src, responseTimeout);
       var techClass = 'vjs-' + tech.name + '-ad';
       dom.addClass(player.el(), techClass);
       player.one('vpaid.adEnd', function() {
@@ -224,9 +227,13 @@ VPAIDIntegrator.prototype._initAd = function (adUnit, vastResponse, next) {
   });
 };
 
+VPAIDIntegrator.prototype._createVASTTracker = function(adUnitSrc, vastResponse) {
+  return new VASTTracker(adUnitSrc, vastResponse);
+};
+
 VPAIDIntegrator.prototype._setupEvents = function (adUnit, vastResponse, next) {
   var adUnitSrc = adUnit.options.src;
-  var tracker = new VASTTracker(adUnitSrc, vastResponse);
+  var tracker = this._createVASTTracker(adUnitSrc, vastResponse);
   var player = this.player;
   var that = this;
 
@@ -451,6 +458,7 @@ VPAIDIntegrator.prototype._addSkipButton = function (adUnit, vastResponse, next)
 };
 
 VPAIDIntegrator.prototype._linkPlayerControls = function (adUnit, vastResponse, next) {
+  var that = this;
   linkVolumeControl(this.player, adUnit);
   linkFullScreenControl(this.player, adUnit, this.VIEW_MODE);
 
@@ -485,7 +493,7 @@ VPAIDIntegrator.prototype._linkPlayerControls = function (adUnit, vastResponse, 
   }
 
   function linkFullScreenControl(player, adUnit, VIEW_MODE) {
-    var updateViewSize = resizeAd.bind(this, player, adUnit, VIEW_MODE);
+    var updateViewSize = resizeAd.bind(that, player, adUnit, VIEW_MODE);
 
     player.on('fullscreenchange', updateViewSize);
 

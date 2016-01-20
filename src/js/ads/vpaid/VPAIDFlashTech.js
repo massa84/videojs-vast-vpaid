@@ -26,8 +26,10 @@ function VPAIDFlashTech(mediaFile, settings) {
   }
 }
 
+VPAIDFlashTech.VPAIDFLASHClient = VPAIDFLASHClient;
+
 VPAIDFlashTech.supports = function (type) {
-  return type === 'application/x-shockwave-flash' && VPAIDFLASHClient.isSupported();
+  return type === 'application/x-shockwave-flash' && VPAIDFlashTech.VPAIDFLASHClient.isSupported();
 };
 
 VPAIDFlashTech.prototype.loadAdUnit = function loadFlashCreative(containerEl, objectEl, callback) {
@@ -36,7 +38,7 @@ VPAIDFlashTech.prototype.loadAdUnit = function loadFlashCreative(containerEl, ob
   sanityCheck(containerEl, callback);
 
   this.containerEl = containerEl;
-  this.vpaidFlashClient = new VPAIDFLASHClient(containerEl, function (error) {
+  this.vpaidFlashClient = new VPAIDFlashTech.VPAIDFLASHClient(containerEl, function (error) {
     if (error) {
       return callback(error);
     }

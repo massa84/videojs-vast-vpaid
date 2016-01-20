@@ -10,7 +10,12 @@ function VASTTracker(assetURI, vastResponse) {
     return new VASTTracker(assetURI, vastResponse);
   }
 
-  sanityCheck(assetURI, vastResponse);
+  this.sanityCheck(assetURI, vastResponse);
+  this.initialize(assetURI, vastResponse);
+
+}
+
+VASTTracker.prototype.initialize = function(assetURI, vastResponse) {
   this.response = vastResponse;
   this.assetURI = assetURI;
   this.progress = 0;
@@ -19,18 +24,17 @@ function VASTTracker(assetURI, vastResponse) {
     midpoint: {tracked: false, time: Math.round(50 * vastResponse.duration) / 100},
     thirdQuartile: {tracked: false, time: Math.round(75 * vastResponse.duration) / 100}
   };
+};
 
-  /*** Local Functions ***/
-  function sanityCheck(assetURI, vastResponse) {
-    if (!utilities.isString(assetURI) || utilities.isEmptyString(assetURI)) {
-      throw new VASTError('on VASTTracker constructor, missing required the URI of the ad asset being played');
-    }
-
-    if (!(vastResponse instanceof VASTResponse)) {
-      throw new VASTError('on VASTTracker constructor, missing required VAST response');
-    }
+VASTTracker.prototype.sanityCheck = function(assetURI, vastResponse) {
+  if (!utilities.isString(assetURI) || utilities.isEmptyString(assetURI)) {
+    throw new VASTError('on VASTTracker constructor, missing required the URI of the ad asset being played');
   }
-}
+
+  if (!(vastResponse instanceof VASTResponse)) {
+    throw new VASTError('on VASTTracker constructor, missing required VAST response');
+  }
+};
 
 VASTTracker.prototype.trackURLs = function trackURLs(urls, variables) {
   if (utilities.isArray(urls) && urls.length > 0) {
@@ -64,6 +68,7 @@ VASTTracker.prototype.trackEvent = function trackEvent(eventName, trackOnce) {
 };
 
 VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
+  var that = this;
   var events = [];
   var ONCE = true;
   var ALWAYS = false;
@@ -72,9 +77,9 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
   if (utilities.isNumber(newProgressInMs)) {
     addTrackEvent('start', ONCE, newProgressInMs > 0);
     addTrackEvent('rewind', ALWAYS, hasRewound(this.progress, newProgressInMs));
-    addQuartileEvents.call(this, newProgressInMs);
-    trackProgressEvents.call(this, newProgressInMs);
-    trackEvents.call(this);
+    addQuartileEvents(newProgressInMs);
+    trackProgressEvents(newProgressInMs);
+    trackEvents();
     this.progress = newProgressInMs;
   }
 
@@ -94,16 +99,16 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
   }
 
   function addQuartileEvents(progress) {
-    var quartiles = this.quartiles;
-    var firstQuartile = this.quartiles.firstQuartile;
-    var midpoint = this.quartiles.midpoint;
-    var thirdQuartile = this.quartiles.thirdQuartile;
+    var quartiles = that.quartiles;
+    var firstQuartile = that.quartiles.firstQuartile;
+    var midpoint = that.quartiles.midpoint;
+    var thirdQuartile = that.quartiles.thirdQuartile;
 
     if (!firstQuartile.tracked) {
       trackQuartile('firstQuartile', progress);
     } else if (!midpoint.tracked) {
       trackQuartile('midpoint', progress);
-    } else {
+    } else if (!thirdQuartile.tracked){
       trackQuartile('thirdQuartile', progress);
     }
 
@@ -129,7 +134,6 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
     }
 
     var pendingProgressEvts = [];
-    var that = this;
 
     trackingEvents.progress.forEach(function (evt) {
       if (evt.offset <= progress) {
@@ -143,8 +147,8 @@ VASTTracker.prototype.trackProgress = function trackProgress(newProgressInMs) {
 
   function trackEvents() {
     events.forEach(function (event) {
-      this.trackEvent(event.name, event.trackOnce);
-    }, this);
+      that.trackEvent(event.name, event.trackOnce);
+    });
   }
 };
 

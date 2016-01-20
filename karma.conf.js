@@ -8,12 +8,20 @@ module.exports = function (karma) {
     /**
      * This is the list of file patterns to load into the browser during testing.
      */
-    files: [],
-    exclude: [],
-    frameworks: ['mocha', 'chai-sinon'],
+    frameworks: [ 'browserify', 'mocha', 'chai-sinon'],
 
-    preprocessors: {},
-
+    files: [
+        'bower_components/videojs_4/dist/video-js/video.js',
+        'test/test-utils.css',
+        'test/**/*.spec.js'],
+    preprocessors: {
+      'test/**/*.js': [ 'browserify' ]
+    },
+    browserify: {
+      paths: ['src/js', 'bower_components'],
+      debug: true,
+      transform: [ ['babelify', {presets: ["es2015"]}] ]
+    },
     logLevel: 'ERROR',
     /**
      * How to report, by default.
@@ -31,8 +39,8 @@ module.exports = function (karma) {
     /**
      * Disable file watching by default.
      */
-    autoWatch: false,
-
+    autoWatch: true,
+    singleRun: false,
     /**
      * The list of browsers to launch to test on. This includes only "Firefox" by
      * default, but other browser names include:
@@ -48,7 +56,7 @@ module.exports = function (karma) {
      */
     browsers: [
       //'Safari',
-      'Firefox',
+      //'Firefox',
       'Chrome'
     ]
   });

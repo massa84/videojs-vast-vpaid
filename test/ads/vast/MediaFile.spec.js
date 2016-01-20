@@ -1,3 +1,7 @@
+var MediaFile = require('ads/vast/MediaFile');
+
+var xml = require('utils/xml');
+
 describe("MediaFile", function () {
   var mediaFileXML;
 
@@ -9,7 +13,7 @@ describe("MediaFile", function () {
   });
 
   it("must return an instance of MediaFile", function () {
-    assert.instanceOf(MediaFile(xml.toJXONTree(mediaFileXML)), MediaFile);
+    assert.instanceOf(new MediaFile(xml.toJXONTree(mediaFileXML)), MediaFile);
   });
 
   describe("instance", function () {
@@ -20,7 +24,7 @@ describe("MediaFile", function () {
         '<MediaFile id="1" delivery="progressive" type="video/x-flv" codec="video/mpeg-generic" bitrate="457" width="300" height="225">' +
         '<![CDATA[http://gcdn.2mdn.net/MotifFiles/html/2215309/PID_914438_1235753019000_dcrmvideo.flv]]>' +
         '</MediaFile>';
-      mediaFile = MediaFile(xml.toJXONTree(mediaFileXML));
+      mediaFile = new MediaFile(xml.toJXONTree(mediaFileXML));
     });
 
     it("must set the src", function(){
@@ -56,27 +60,27 @@ describe("MediaFile", function () {
     });
 
     it("must set the minBitrate if set in the xml in the xml", function () {
-      mediaFile = MediaFile(xml.toJXONTree('<MediaFile minBitrate="457"></MediaFile>'));
+      mediaFile = new MediaFile(xml.toJXONTree('<MediaFile minBitrate="457"></MediaFile>'));
       assert.equal(mediaFile.minBitrate, 457);
     });
 
     it("must set the maxBitrate if set in the xml", function () {
-      mediaFile = MediaFile(xml.toJXONTree('<MediaFile maxBitrate="457"></MediaFile>'));
+      mediaFile = new MediaFile(xml.toJXONTree('<MediaFile maxBitrate="457"></MediaFile>'));
       assert.equal(mediaFile.maxBitrate, 457);
     });
 
     it("must set the scalable attr if set in the xml", function () {
-      mediaFile = MediaFile(xml.toJXONTree('<MediaFile scalable="true"></MediaFile>'));
+      mediaFile = new MediaFile(xml.toJXONTree('<MediaFile scalable="true"></MediaFile>'));
       assert.isTrue(mediaFile.scalable);
     });
 
     it("must set the maintainAspectRatio attr if set in the xml", function () {
-      mediaFile = MediaFile(xml.toJXONTree('<MediaFile maintainAspectRatio="true"></MediaFile>'));
+      mediaFile = new MediaFile(xml.toJXONTree('<MediaFile maintainAspectRatio="true"></MediaFile>'));
       assert.isTrue(mediaFile.maintainAspectRatio);
     });
 
     it("must set the apiFramework if set in the xml", function () {
-      mediaFile = MediaFile(xml.toJXONTree('<MediaFile apiFramework="someApiFramework"></MediaFile>'));
+      mediaFile = new MediaFile(xml.toJXONTree('<MediaFile apiFramework="someApiFramework"></MediaFile>'));
       assert.equal(mediaFile.apiFramework, 'someApiFramework');
     });
 

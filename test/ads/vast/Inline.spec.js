@@ -1,3 +1,8 @@
+var Creative = require('ads/vast/Creative');
+var InLine = require('ads/vast/InLine');
+
+var xml = require('utils/xml');
+
 describe("InLine", function () {
   var inlineXML;
 
@@ -15,14 +20,14 @@ describe("InLine", function () {
   });
 
   it("must return an instance of InLine", function () {
-    assert.instanceOf(InLine(xml.toJXONTree(inlineXML)), InLine);
+    assert.instanceOf(new InLine(xml.toJXONTree(inlineXML)), InLine);
   });
 
   describe("required fields", function () {
     var inline;
 
     beforeEach(function () {
-      inline = InLine(xml.toJXONTree(inlineXML));
+      inline = new InLine(xml.toJXONTree(inlineXML));
     });
 
     it("must publish the adTitle", function () {
@@ -42,7 +47,7 @@ describe("InLine", function () {
         inlineXML = '<InLine>' +
         '<Impression><![CDATA[]]></Impression>' +
         '</InLine>';
-        inline = InLine(xml.toJXONTree(inlineXML));
+        inline = new InLine(xml.toJXONTree(inlineXML));
         assert.equal(inline.impressions.length, 0);
       });
 
@@ -52,7 +57,7 @@ describe("InLine", function () {
         '<![CDATA[http://ad.doubleclick.net/imp;v7;x;223626102;0-0;0;47414672;0/0;30477563/30495440/1;;~aopt=0/0/ff/0;~cs=j%3fhttp://s0.2mdn.net/dot.gif]]>' +
         '</Impression>' +
         '</InLine>';
-        inline = InLine(xml.toJXONTree(inlineXML));
+        inline = new InLine(xml.toJXONTree(inlineXML));
 
         assert.deepEqual(inline.impressions, [
           'http://ad.doubleclick.net/imp;v7;x;223626102;0-0;0;47414672;0/0;30477563/30495440/1;;~aopt=0/0/ff/0;~cs=j%3fhttp://s0.2mdn.net/dot.gif'
@@ -71,7 +76,7 @@ describe("InLine", function () {
         '<![CDATA[]]>' +
         '</Impression>' +
         '</InLine>';
-        inline = InLine(xml.toJXONTree(inlineXML));
+        inline = new InLine(xml.toJXONTree(inlineXML));
 
         assert.deepEqual(inline.impressions, [
           'http://ad.doubleclick.net/imp;v7;x;223626102;0-0;0;47414672;0/0;30477563/30495440/1;;~aopt=0/0/ff/0;~cs=j%3fhttp://s0.2mdn.net/dot.gif',
@@ -89,7 +94,7 @@ describe("InLine", function () {
         '<Creative id="8455" sequence="2"></Creative>' +
         '</Creatives>' +
         '</InLine>';
-        inline = InLine(xml.toJXONTree(inlineXML));
+        inline = new InLine(xml.toJXONTree(inlineXML));
       });
 
       it("must be an array or creatives", function () {
@@ -106,7 +111,7 @@ describe("InLine", function () {
   describe("optional fields", function () {
     describe("description", function () {
       it("must be undefined if not set", function () {
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.isUndefined(inline.description);
       });
 
@@ -115,14 +120,14 @@ describe("InLine", function () {
         '<InLine>' +
         '<Description>41683 Hof Christmas ad</Description>' +
         '</InLine>';
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.equal(inline.description, '41683 Hof Christmas ad');
       });
     });
 
     describe("advertiser", function () {
       it("must be undefined if not set", function () {
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.equal(inline.advertiser, undefined);
       });
 
@@ -131,14 +136,14 @@ describe("InLine", function () {
         '<InLine>' +
         '<Advertiser>AdvertiserName</Advertiser>' +
         '</InLine>';
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.equal(inline.advertiser, 'AdvertiserName');
       });
     });
 
     describe("surveys", function () {
       it("must be an empty array if not surveys are set", function () {
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.deepEqual(inline.surveys, []);
       });
 
@@ -151,7 +156,7 @@ describe("InLine", function () {
         '<![CDATA[http://pubads.g.doubleclick.net/pagead/survey]]>' +
         '</Survey>' +
         '</InLine>';
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.deepEqual(inline.surveys, [
           {
             uri: 'http://pubads.g.doubleclick.net/pagead/survey',
@@ -167,7 +172,7 @@ describe("InLine", function () {
 
     describe("pricing", function () {
       it("must be undefined if not set", function () {
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.isUndefined(inline.pricing);
       });
 
@@ -175,14 +180,14 @@ describe("InLine", function () {
         inlineXML = '<InLine>' +
         '<Pricing>price</Pricing>' +
         '</InLine>';
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.equal(inline.pricing, 'price');
       });
     });
 
     describe("error", function () {
       it("must be undefined if not set", function () {
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.isUndefined(inline.error);
       });
 
@@ -191,7 +196,7 @@ describe("InLine", function () {
         inlineXML = '<InLine>' +
         '<Error><![CDATA[http://pubads.g.doubleclick.net/pagead/conversion/?ai=Bc4roEKqOVIzhJqPi7ga7y4G4CrjOsO4FAAAAEAEgyJaWHDgAWNiN_Je3AWC7rquD0AqyARN3d3cuZGFpbHltYWlsLmNvLnVrugENOHg4X3htbF92YXN0M8gBBdoBqAFodHRwOi8vd3d3LmRhaWx5bWFpbC5jby51ay90dnNob3diaXovYXJ0aWNsZS0yODU2OTEyL1BhcnR5LWdpcmwtUmloYW5uYS1sZXRzLWxvb3NlLWRhbmNlZmxvb3Itc2hvd3MtcmF1bmNoeS1tb3Zlcy1zZW1pLXNoZWVyLWdvd24tQnJpdGlzaC1GYXNoaW9uLUF3YXJkcy1hZnRlcnBhcnR5Lmh0bWyYAuiEAakCPN_bpEVluj7AAgLgAgDqAiEvNTc2NS9kbS52aWRlby9kbV92aWRlb190dnNob3diaXr4AvnRHpAD0AWYA9AFqAMB4AQBoAYj&sigh=fy3coLR3uPk&label=videoplayfailed[ERRORCODE]]]></Error>' +
         '</InLine>';
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
 
         assert.equal(inline.error, 'http://pubads.g.doubleclick.net/pagead/conversion/?ai=Bc4roEKqOVIzhJqPi7ga7y4G4CrjOsO4FAAAAEAEgyJaWHDgAWNiN_Je3AWC7rquD0AqyARN3d3cuZGFpbHltYWlsLmNvLnVrugENOHg4X3htbF92YXN0M8gBBdoBqAFodHRwOi8vd3d3LmRhaWx5bWFpbC5jby51ay90dnNob3diaXovYXJ0aWNsZS0yODU2OTEyL1BhcnR5LWdpcmwtUmloYW5uYS1sZXRzLWxvb3NlLWRhbmNlZmxvb3Itc2hvd3MtcmF1bmNoeS1tb3Zlcy1zZW1pLXNoZWVyLWdvd24tQnJpdGlzaC1GYXNoaW9uLUF3YXJkcy1hZnRlcnBhcnR5Lmh0bWyYAuiEAakCPN_bpEVluj7AAgLgAgDqAiEvNTc2NS9kbS52aWRlby9kbV92aWRlb190dnNob3diaXr4AvnRHpAD0AWYA9AFqAMB4AQBoAYj&sigh=fy3coLR3uPk&label=videoplayfailed[ERRORCODE]');
       });
@@ -199,7 +204,7 @@ describe("InLine", function () {
 
     describe("extensions", function () {
       it("must be undefined if not set", function () {
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.isUndefined(inline.extensions);
       });
 
@@ -207,7 +212,7 @@ describe("InLine", function () {
         inlineXML = '<InLine>' +
         '<Extensions>price</Extensions>' +
         '</InLine>';
-        var inline = InLine(xml.toJXONTree(inlineXML));
+        var inline = new InLine(xml.toJXONTree(inlineXML));
         assert.isDefined(inline.extensions);
         assert.deepEqual(inline.extensions, xml.toJXONTree(inlineXML).extensions);
       });

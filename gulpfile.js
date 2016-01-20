@@ -31,7 +31,7 @@ gulp.task('default', function (finishTask) {
     }
 
     function printBanner(done) {
-        asciify('Videojs Vast Vpaid', function (err, res) {
+        asciify('Videojs Vast Vpaid' , function (err, res) {
             console.log(res.help);
             done();
         });
@@ -41,10 +41,10 @@ gulp.task('default', function (finishTask) {
         var table = new Table({
             head: ['Name', 'Description'],
             colWidths: [25, 80],
-            chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗'
-                , 'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝'
-                , 'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼'
-                , 'right': '║' , 'right-mid': '╢' , 'middle': '│' }
+            chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗' ,
+                'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝' ,
+                'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼' ,
+                'right': '║' , 'right-mid': '╢' , 'middle': '│' }
         });
 
         var buildTasks = getBuildTasks(buildTasksMap);

@@ -141,4 +141,9 @@ function createXhr() {
 
 var http = new HttpRequest(createXhr);
 
-module.exports = http;
+module.exports = {
+  http: http,
+  HttpRequest: HttpRequest,
+  HttpRequestError: HttpRequestError,
+  createXhr: createXhr
+};

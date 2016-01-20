@@ -18,7 +18,7 @@ pass=true
 echo -e "Validating JavaScript: \c"
 
 for file in ${files}; do
-    result=$(jshint ${file})
+    result=$(./node_modules/.bin/jshint ${file})
     if [ "$result" = "" ]; then
         echo -e "\033[32mPassed: ${file}\033[0m"
     else

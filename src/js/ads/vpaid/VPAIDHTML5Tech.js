@@ -29,6 +29,8 @@ function VPAIDHTML5Tech(mediaFile) {
   }
 }
 
+VPAIDHTML5Tech.VPAIDHTML5Client = VPAIDHTML5Client;
+
 VPAIDHTML5Tech.supports = function (type) {
   return !utilities.isOldIE() && type === 'application/javascript';
 };
@@ -38,7 +40,7 @@ VPAIDHTML5Tech.prototype.loadAdUnit = function loadAdUnit(containerEl, videoEl, 
 
   this.containerEl = containerEl;
   this.videoEl = videoEl;
-  this.vpaidHTMLClient = new VPAIDHTML5Client(containerEl, videoEl, {});
+  this.vpaidHTMLClient = new VPAIDHTML5Tech.VPAIDHTML5Client(containerEl, videoEl, {});
   this.vpaidHTMLClient.loadAdUnit(this.mediaFile.src, callback);
 
   function sanityCheck(container, video, cb) {

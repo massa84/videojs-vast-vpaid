@@ -1,3 +1,5 @@
+'use strict';
+
 var dom = require('../../utils/dom');
 
 var element = document.createElement('div');
@@ -10,8 +12,6 @@ var AdsLabelFactory = function(baseComponent) {
     init: function init(player, options) {
       options.el = element;
       baseComponent.call(this, player, options);
-
-      var that = this;
 
       // We asynchronously reposition the ads label element
       setTimeout(function () {

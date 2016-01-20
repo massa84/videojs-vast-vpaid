@@ -1,6 +1,6 @@
 'use strict';
 
-var vastUtil = require('./vastUtil');
+var parsers = require('./parsers');
 
 var xml = require('../../utils/xml');
 
@@ -13,7 +13,7 @@ function TrackingEvent(trackingJTree, duration) {
   this.uri = xml.keyValue(trackingJTree);
 
   if('progress' === this.name) {
-    this.offset = vastUtil.parseOffset(trackingJTree.attr('offset'), duration);
+    this.offset = parsers.offset(trackingJTree.attr('offset'), duration);
   }
 }
 

@@ -1,13 +1,20 @@
+var HttpRequest = require('utils/http').HttpRequest;
+var HttpRequestError = require('utils/http').HttpRequestError;
+var utilities = require('utils/utilityFunctions');
+
+var testUtils = require('../test-utils');
+
 describe("HttpRequest", function () {
   it("must throw an exception if you don't pass a xhrFactory function", function () {
     assert.throws(function () {
+      /*jshint unused:false*/
       var http = new HttpRequest();
     }, HttpRequestError, 'HttpRequest Error: Missing XMLHttpRequest factory method');
   });
 
   it("must publish the xhrFactory in this.createXhr", function () {
-    var http = new HttpRequest(noop);
-    assert.strictEqual(http.createXhr, noop);
+    var http = new HttpRequest(utilities.noop);
+    assert.strictEqual(http.createXhr, utilities.noop);
   });
 
   describe("instance", function () {
@@ -54,32 +61,32 @@ describe("HttpRequest", function () {
 
       it("must not throw any error if you pass a valid url and a valid handler function", function () {
         assert.doesNotThrow(function () {
-          $http.run('GET', 'localhost', noop);
+          $http.run('GET', 'localhost', utilities.noop);
         }, HttpRequestError);
       });
 
       it("must throw an exception if you pass a wrong an invalid type for the options", function () {
         assert.throws(function () {
-          $http.run('GET', 'localhost', noop, '');
+          $http.run('GET', 'localhost', utilities.noop, '');
         }, HttpRequestError, "HttpRequest Error: Invalid options map ''");
       });
 
       it("must open an async xhr get request using the passed url", function () {
-        $http.run('GET', 'http://localhost', noop);
+        $http.run('GET', 'http://localhost', utilities.noop);
         assert.isTrue(xhr.open.calledOnce);
         assert.isTrue(xhr.open.calledWith('GET', 'http://localhost/', true));
       });
 
       it("must normalize the url before opening the connection", function () {
-        $http.run('GET', '/fake_request', noop);
+        $http.run('GET', '/fake_request', utilities.noop);
         assert.match(xhr.open.lastCall.args[1], /^https?:\/\/[^/]+\/fake_request$/);
 
-        $http.run('GET', 'fake_request', noop);
+        $http.run('GET', 'fake_request', utilities.noop);
         assert.match(xhr.open.lastCall.args[1], /^https?:\/\/[^/]+\/fake_request$/);
       });
 
       it("must be possible to set the headers of the request", function () {
-        $http.run('GET', '/fake_request', noop, {
+        $http.run('GET', '/fake_request', utilities.noop, {
           headers: {
             header1: 'val1',
             header2: 'val2'
@@ -95,12 +102,12 @@ describe("HttpRequest", function () {
       });
 
       it("must be possible to mark the request 'withCredentials'", function () {
-        $http.run('GET', '/fake_request', noop, {withCredentials: true});
+        $http.run('GET', '/fake_request', utilities.noop, {withCredentials: true});
         assert.isTrue(xhr.withCredentials);
       });
 
       it("must send the request", function () {
-        $http.run('GET', '/fake_request', noop);
+        $http.run('GET', '/fake_request', utilities.noop);
         assert.isTrue(xhr.send.calledOnce);
       });
 
@@ -180,7 +187,7 @@ describe("HttpRequest", function () {
         });
       });
 
-      forEach(['onerror', 'onabort'], function (onFail) {
+      ['onerror', 'onabort'].forEach(function (onFail) {
         describe(onFail, function () {
           var callback, fakeResponse;
           beforeEach(function () {
@@ -225,7 +232,7 @@ describe("HttpRequest", function () {
         var run = sinon.spy($http, 'run');
         var options = {};
 
-        $http.get('http://localhost', noop, options);
+        $http.get('http://localhost', utilities.noop, options);
         assert.isTrue(run.calledOnce);
         assert.isTrue(run.lastCall.calledWithExactly(
           'GET',
@@ -288,12 +295,12 @@ describe("HttpRequest", function () {
 
         it("must pass the error as the first argument of the callback", function () {
           assert.isTrue(callback.calledOnce);
-          assert.instanceOf(firstArg(callback), HttpRequestError);
-          assert.equal(firstArg(callback).message, 'HttpRequest Error: 404 not found');
+          assert.instanceOf(testUtils.firstArg(callback), HttpRequestError);
+          assert.equal(testUtils.firstArg(callback).message, 'HttpRequest Error: 404 not found');
         });
 
         it("must pass the error and the data that comes from the server, the status, the headersString and the statusText", function () {
-          var httpError = firstArg(callback);
+          var httpError = testUtils.firstArg(callback);
           assert.isTrue(callback.calledWithExactly(
             httpError,
             fakeResponse,
@@ -306,12 +313,12 @@ describe("HttpRequest", function () {
 
       describe("options", function () {
         it("must be used on the actual request", function () {
-          $http.get('http://localhost', noop, {withCredentials: true});
+          $http.get('http://localhost', utilities.noop, {withCredentials: true});
           assert.isTrue(xhr.withCredentials);
         });
 
         it("must work event if the optional error callback is passed", function () {
-          $http.get('http://localhost', noop, {withCredentials: true});
+          $http.get('http://localhost', utilities.noop, {withCredentials: true});
           assert.isTrue(xhr.withCredentials);
         });
       });

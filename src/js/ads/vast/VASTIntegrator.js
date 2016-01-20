@@ -180,6 +180,7 @@ VASTIntegrator.prototype._setupEvents = function setupEvents(adMediaFile, tracke
 
 VASTIntegrator.prototype._addSkipButton = function addSkipButton(source, tracker, response, callback) {
   var skipOffsetInSec;
+  var that = this;
 
   if (utilities.isNumber(response.skipoffset)) {
     skipOffsetInSec = response.skipoffset / 1000;
@@ -190,7 +191,7 @@ VASTIntegrator.prototype._addSkipButton = function addSkipButton(source, tracker
   /*** Local function ***/
   function addSkipButtonToPlayer(player, skipOffset) {
     var skipButton = createSkipButton(player);
-    var updateSkipButton = updateSkipButtonState.bind(this, skipButton, skipOffset, player);
+    var updateSkipButton = updateSkipButtonState.bind(that, skipButton, skipOffset, player);
 
     player.el().appendChild(skipButton);
     player.on('timeupdate', updateSkipButton);

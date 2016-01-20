@@ -1,3 +1,7 @@
+var VideoClicks = require('ads/vast/VideoClicks');
+
+var xml = require('utils/xml');
+
 describe("VideoClicks", function () {
   var videoClicks, videoClicksXML;
 
@@ -9,7 +13,7 @@ describe("VideoClicks", function () {
   });
 
   it("must return an instance of VideoClicks", function () {
-    assert.instanceOf(VideoClicks(videoClicksXML), VideoClicks);
+    assert.instanceOf(new VideoClicks(videoClicksXML), VideoClicks);
   });
 
   it("must set the clickThrough", function () {

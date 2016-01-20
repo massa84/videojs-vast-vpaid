@@ -2,6 +2,11 @@
 "use strict";
 
 var NODE_TYPE_ELEMENT = 1;
+var SNAKE_CASE_REGEXP = /[A-Z]/g;
+var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
+/*jslint maxlen: 500 */
+var ISO8086_REGEXP = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
+
 
 function noop(){ }
 
@@ -30,7 +35,7 @@ function isNumber(num){
 }
 
 function isWindow(obj) {
-  return isObject(obj) && obj.window === obj;
+  return utilities.isObject(obj) && obj.window === obj;
 }
 
 function isArray(array){
@@ -38,7 +43,7 @@ function isArray(array){
 }
 
 function isArrayLike(obj) {
-  if (obj === null || isWindow(obj) || isFunction(obj) || isUndefined(obj)) {
+  if (obj === null || utilities.isWindow(obj) || utilities.isFunction(obj) || utilities.isUndefined(obj)) {
     return false;
   }
 
@@ -48,7 +53,7 @@ function isArrayLike(obj) {
     return true;
   }
 
-  return isString(obj) || isArray(obj) || length === 0 ||
+  return utilities.isString(obj) || utilities.isArray(obj) || length === 0 ||
     typeof length === 'number' && length > 0 && (length - 1) in obj;
 }
 
@@ -57,11 +62,11 @@ function isString(str){
 }
 
 function isEmptyString(str) {
-  return isString(str) && str.length === 0;
+  return utilities.isString(str) && str.length === 0;
 }
 
 function isNotEmptyString(str) {
-  return isString(str) && str.length !== 0;
+  return utilities.isString(str) && str.length !== 0;
 }
 
 function arrayLikeObjToArray(args) {
@@ -99,7 +104,6 @@ function forEach(obj, iterator, context) {
   return obj;
 }
 
-var SNAKE_CASE_REGEXP = /[A-Z]/g;
 function snake_case(name, separator) {
   separator = separator || '_';
   return name.replace(SNAKE_CASE_REGEXP, function(letter, pos) {
@@ -108,10 +112,10 @@ function snake_case(name, separator) {
 }
 
 function isValidEmail(email){
-  if(!isString(email)){
+  if(!utilities.isString(email)){
     return false;
   }
-  var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
+
   return EMAIL_REGEXP.test(email.trim());
 }
 
@@ -149,7 +153,7 @@ function transformArray(array, transformer) {
 
   array.forEach(function(item, index){
     var transformedItem = transformer(item, index);
-    if(isDefined(transformedItem)) {
+    if(utilities.isDefined(transformedItem)) {
       transformedArray.push(transformedItem);
     }
   });
@@ -159,9 +163,9 @@ function transformArray(array, transformer) {
 
 function toFixedDigits(num, digits) {
   var formattedNum = num + '';
-  digits = isNumber(digits) ? digits : 0;
-  num = isNumber(num) ? num : parseInt(num, 10);
-  if(isNumber(num) && !isNaN(num)){
+  digits = utilities.isNumber(digits) ? digits : 0;
+  num = utilities.isNumber(num) ? num : parseInt(num, 10);
+  if(utilities.isNumber(num) && !isNaN(num)){
     formattedNum = num + '';
     while(formattedNum.length < digits) {
       formattedNum = '0' + formattedNum;
@@ -222,17 +226,15 @@ function echoFn(val) {
 //Note: Supported formats come from http://www.w3.org/TR/NOTE-datetime
 // and the iso8601 regex comes from http://www.pelagodesign.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
 function isISO8601(value) {
-  if(isNumber(value)){
+  if(utilities.isNumber(value)){
     value = value + '';  //we make sure that we are working with strings
   }
 
-  if(!isString(value)){
+  if(!utilities.isString(value)){
     return false;
   }
 
-  /*jslint maxlen: 500 */
-  var iso8086Regex = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
-  return iso8086Regex.test(value.trim());
+  return ISO8086_REGEXP.test(value.trim());
 }
 
 /**
@@ -240,7 +242,7 @@ function isISO8601(value) {
  * @returns {boolean}
  */
 function isOldIE() {
-  var version = getInternetExplorerVersion(navigator);
+  var version = utilities.getInternetExplorerVersion(navigator);
   if (version === -1) {
     return false;
   }
@@ -269,24 +271,24 @@ function getInternetExplorerVersion(navigator) {
 }
 
 /*** Mobile Utility functions ***/
-var _UA = navigator.userAgent;
 function isIDevice() {
-  return /iP(hone|ad)/.test(_UA);
+  return /iP(hone|ad)/.test(utilities._UA);
 }
 
 function isMobile() {
-  return /iP(hone|ad|od)|Android|Windows Phone/.test(_UA);
+  return /iP(hone|ad|od)|Android|Windows Phone/.test(utilities._UA);
 }
 
 function isIPhone() {
-  return /iP(hone|od)/.test(_UA);
+  return /iP(hone|od)/.test(utilities._UA);
 }
 
 function isAndroid() {
-  return /Android/.test(_UA);
+  return /Android/.test(utilities._UA);
 }
 
-module.exports = {
+var utilities = {
+  _UA: navigator.userAgent,
   noop: noop,
   isNull: isNull,
   isDefined: isDefined,
@@ -321,3 +323,5 @@ module.exports = {
   isIPhone: isIPhone,
   isAndroid: isAndroid
 };
+
+module.exports = utilities;

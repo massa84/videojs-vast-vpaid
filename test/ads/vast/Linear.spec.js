@@ -1,6 +1,13 @@
+var Linear = require('ads/vast/Linear');
+var MediaFile = require('ads/vast/MediaFile');
+var TrackingEvent = require('ads/vast/TrackingEvent');
+var VideoClicks = require('ads/vast/VideoClicks');
+
+var xml = require('utils/xml');
+
 describe("Linear", function(){
   it("must return an instance of Linear", function(){
-    var linear = Linear(xml.toJXONTree('<Linear></Linear>'));
+    var linear = new Linear(xml.toJXONTree('<Linear></Linear>'));
     assert.instanceOf(linear, Linear);
   });
 
@@ -8,7 +15,7 @@ describe("Linear", function(){
   describe("duration", function(){
     it("must contain the duration specified on the xml in ms", function(){
       var linearXML = '<Linear><Duration>00:00:58</Duration></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.equal(linear.duration, 58000);
     });
   });
@@ -16,7 +23,7 @@ describe("Linear", function(){
   describe("mediaFiles", function(){
     it("must be an array", function(){
       var linearXML = '<Linear><MediaFiles></MediaFiles></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.isArray(linear.mediaFiles);
     });
 
@@ -33,7 +40,7 @@ describe("Linear", function(){
       '</MediaFile>' +
       '</MediaFiles>' +
       '</Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
 
       assert.equal(linear.mediaFiles.length, 2);
       assert.instanceOf(linear.mediaFiles[0], MediaFile);
@@ -47,7 +54,7 @@ describe("Linear", function(){
   describe("videoClicks", function(){
     it("must be an instance of videoClicks", function(){
       var linearXML = '<Linear><VideoClicks></VideoClicks></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.instanceOf(linear.videoClicks, VideoClicks);
     });
   });
@@ -65,7 +72,7 @@ describe("Linear", function(){
         '</Tracking>'+
         '</TrackingEvents>'+
         '</Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       var trackingEvents = linear.trackingEvents;
 
       //First tracking event
@@ -87,7 +94,7 @@ describe("Linear", function(){
         '</TrackingEvents>' +
         '<Duration>00:00:00.100</Duration>'+
         '</Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       var trackingEvents = linear.trackingEvents;
 
       assert.isArray(trackingEvents);
@@ -104,35 +111,35 @@ describe("Linear", function(){
   describe("skipoffset", function(){
     it("must contain whatever is set on the xml but parsed into ms", function(){
       var linearXML = '<Linear skipoffset="00:00:05.000"></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.equal(linear.skipoffset, 5000);
     });
 
     it("must be possible to set the skipoffset as a percentage", function(){
       var linearXML = '<Linear skipoffset="10%"><Duration>00:00:01</Duration></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.equal(linear.skipoffset, 100);
     });
 
     it("must be possible to set the skipoffset as a percentage with decimals", function(){
       var linearXML = '<Linear skipoffset="10.5%"><Duration>00:00:01</Duration></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.equal(linear.skipoffset, 105);
     });
 
     it("as percentage with no linear.duration must be null", function(){
       var linearXML = '<Linear skipoffset="10%"></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.isNull(linear.skipoffset);
     });
   });
-  
+
   describe("AdParameters", function(){
     it("must be added to the linear", function(){
       var encodedAdParameters = xml.encode('<some>data</some>');
 
       var linearXML = '<Linear skipoffset="10%"><AdParameters><![CDATA['+encodedAdParameters+']]></AdParameters></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.equal(linear.adParameters, encodedAdParameters);
     });
 
@@ -140,7 +147,7 @@ describe("Linear", function(){
       var encodedAdParameters = xml.encode('<some>data</some>');
 
       var linearXML = '<Linear skipoffset="10%"><AdParameters xmlEncoded="true"><![CDATA['+encodedAdParameters+']]></AdParameters></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.equal(linear.adParameters, '<some>data</some>');
     });
 
@@ -148,7 +155,7 @@ describe("Linear", function(){
       var encodedAdParameters = xml.encode('<some>data</some>');
 
       var linearXML = '<Linear skipoffset="10%"><AdParameters xmlEncoded="false"><![CDATA['+encodedAdParameters+']]></AdParameters></Linear>';
-      var linear = Linear(xml.toJXONTree(linearXML));
+      var linear = new Linear(xml.toJXONTree(linearXML));
       assert.equal(linear.adParameters, encodedAdParameters);
     });
   });

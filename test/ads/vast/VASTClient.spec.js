@@ -1,7 +1,19 @@
+var Ad = require('ads/vast/Ad');
+var TrackingEvent = require('ads/vast/TrackingEvent');
+var VASTClient = require('ads/vast/VASTClient');
+var VASTError = require('ads/vast/VASTError');
+var VASTResponse = require('ads/vast/VASTResponse');
+var vastUtil = require('ads/vast/vastUtil');
+
+var utilities = require('utils/utilityFunctions');
+var xml = require('utils/xml');
+
+var testUtils = require('../../test-utils');
+
 /*jslint maxlen: 700 */
 describe("VASTClient", function () {
   function assertError(callback, msg, code) {
-    var error = firstArg(callback);
+    var error = testUtils.firstArg(callback);
     assert.instanceOf(error, VASTError);
     assert.equal(error.message, "VAST Error: " + msg);
     if (code) {
@@ -10,7 +22,7 @@ describe("VASTClient", function () {
   }
 
   function assertNoError(callback) {
-    assert.isNull(firstArg(callback));
+    assert.isNull(testUtils.firstArg(callback));
   }
 
   function assertThrowsVASTError(fn, msg, code) {
@@ -55,7 +67,7 @@ describe("VASTClient", function () {
   });
 
   it("must return an instance of VASTClient if you execute the function", function () {
-    assert.instanceOf(VASTClient(), VASTClient);
+    assert.instanceOf(new VASTClient(), VASTClient);
   });
 
   describe("instance", function () {
@@ -70,12 +82,12 @@ describe("VASTClient", function () {
 
       beforeEach(function(){
         this.clock = sinon.useFakeTimers();
-        sinon.stub(vast, '_requestVASTXml', noop);
+        sinon.stub(vast, '_requestVASTXml', utilities.noop);
         callback = sinon.spy();
 
         flushVASTXmlRequest = function (error, vastXML) {
           var cb;
-          cb = secondArg(vast._requestVASTXml);
+          cb = testUtils.secondArg(vast._requestVASTXml);
           cb(error, vastXML);
           this.clock.tick(1);
         }.bind(this);
@@ -99,7 +111,7 @@ describe("VASTClient", function () {
 
         this.clock.tick(10);
         assertNoError(callback);
-        response = secondArg(callback);
+        response = testUtils.secondArg(callback);
 
         assert.instanceOf(response, VASTResponse);
       });
@@ -134,7 +146,7 @@ describe("VASTClient", function () {
       it("must pass an error to the callback if there was a callback and not adUrlTag", function(){
         vast.getVASTResponse(null, callback);
         this.clock.tick(1);
-        var error = firstArg(callback);
+        var error = testUtils.firstArg(callback);
         assert.instanceOf(error, VASTError);
         assert.equal(error.message, 'VAST Error: on VASTClient.getVASTResponse, missing ad tag URL');
         sinon.assert.notCalled(vast._requestVASTXml);
@@ -240,7 +252,7 @@ describe("VASTClient", function () {
       });
 
       it("must request the VAST response using the passed adTagUrl", function () {
-        vast._requestVASTXml(adTagUrl, noop);
+        vast._requestVASTXml(adTagUrl, utilities.noop);
         assert.equal(1, requests.length);
         assert.equal('http://foo.bar/', requests[0].url);
       });
@@ -254,7 +266,7 @@ describe("VASTClient", function () {
         vast._requestVASTXml(adTagUrl, callback);
 
         sinon.assert.calledWithExactly(callback, sinon.match(Error));
-        assert.equal(firstArg(callback).message, 'Error creating xhr');
+        assert.equal(testUtils.firstArg(callback).message, 'Error creating xhr');
       });
 
       describe("on XHR GET request error", function () {
@@ -279,7 +291,7 @@ describe("VASTClient", function () {
       describe("with adTagUrl fn", function(){
         it("must request the XML using the passed adTagUrl function", function(){
           var spy = sinon.spy();
-          vast._requestVASTXml(spy, noop);
+          vast._requestVASTXml(spy, utilities.noop);
           assert.equal(0, requests.length);
           sinon.assert.calledWithExactly(spy, sinon.match.func);
         });
@@ -288,7 +300,7 @@ describe("VASTClient", function () {
           var callback = sinon.spy();
           var adTagXMLSpy = sinon.spy();
           vast._requestVASTXml(adTagXMLSpy, callback);
-          var handler = firstArg(adTagXMLSpy);
+          var handler = testUtils.firstArg(adTagXMLSpy);
           handler(new Error('meeec'), null);
           assertError(callback, "on VASTClient.requestVastXML, Error getting the the VAST XML with he passed adTagXML fn", 301);
         });
@@ -297,7 +309,7 @@ describe("VASTClient", function () {
           var callback = sinon.spy();
           var adTagXMLSpy = sinon.spy();
           vast._requestVASTXml(adTagXMLSpy, callback);
-          var handler = firstArg(adTagXMLSpy);
+          var handler = testUtils.firstArg(adTagXMLSpy);
           handler(null, vastAdXML());
           sinon.assert.calledWithExactly(callback, null, vastAdXML());
 
@@ -309,7 +321,7 @@ describe("VASTClient", function () {
       var xhr, requests, callback;
 
       function assertErrorTrack(msg, code, adChainIds){
-        var adChain = secondArg(vast._trackError);
+        var adChain = testUtils.secondArg(vast._trackError);
 
         assertError(vast._trackError, msg, code);
 
@@ -337,7 +349,7 @@ describe("VASTClient", function () {
 
       it("must request the ad tree with passed adTagUrl", function(){
         var adTagUrl = 'http://foo.bar/';
-        vast._getVASTAd(adTagUrl, noop);
+        vast._getVASTAd(adTagUrl, utilities.noop);
         this.clock.tick(1);
         assert.equal(1, requests.length);
         assert.equal(adTagUrl, requests[0].url);
@@ -438,12 +450,12 @@ describe("VASTClient", function () {
 
         requests[1].respond(200, {"Content-Type": "text"}, '<?xml version="1.0" encoding="utf-8"?>' +
           '<VAST version="2.0"><Ad id="secondAd"></Ad></VAST>');
-        sinon.stub(window, 'Ad').throws(new Error('CUSTOM ERROR'));
+        sinon.stub(Ad.prototype, 'initialize').throws(new Error('CUSTOM ERROR'));
         this.clock.tick(1);
 
         assertError(callback, "on VASTClient.getVASTAd.buildAd, error parsing xml", 100);
         assertErrorTrack("on VASTClient.getVASTAd.buildAd, error parsing xml", 100, ['firstAd']);
-        window.Ad.restore();
+        Ad.prototype.initialize.restore();
       });
 
       it("must pass a 302 error to the callback and track it if the adChain reached the configured WRAPPER_LIMIT", function(){
@@ -552,8 +564,8 @@ describe("VASTClient", function () {
           '</Linear></Creative></Creatives></InLine></Ad>'));
         this.clock.tick(1);
 
-        assert.isNull(firstArg(callback));
-        var adChain = secondArg(callback);
+        assert.isNull(testUtils.firstArg(callback));
+        var adChain = testUtils.secondArg(callback);
         assert.isArray(adChain);
         assert.equal(adChain.length, 2);
         assert.equal(adChain[0].id, 'adChain2');
@@ -593,9 +605,8 @@ describe("VASTClient", function () {
           '<Duration>00:00:58</Duration>' +
           '</Linear></Creative></Creatives></InLine></Ad>'));
         this.clock.tick(1);
-
-        assert.isNull(firstArg(callback));
-        var adChain = secondArg(callback);
+        assert.isNull(testUtils.firstArg(callback));
+        var adChain = testUtils.secondArg(callback);
         assert.isArray(adChain);
         assert.equal(adChain.length, 2);
         assert.equal(adChain[0].id, 'adChain2');
@@ -605,7 +616,7 @@ describe("VASTClient", function () {
 
     describe("_trackError", function(){
       var adChain;
-      
+
       beforeEach(function(){
         sinon.stub(vastUtil, 'track');
 
@@ -631,12 +642,12 @@ describe("VASTClient", function () {
         vast._trackError(error, adChain);
         sinon.assert.calledOnce(vastUtil.track);
 
-        assert.deepEqual(firstArg(vastUtil.track), [
+        assert.deepEqual(testUtils.firstArg(vastUtil.track), [
           'http://t1.liverail.com/?metric=error&erc=[ERRORCODE]',
           'http://t2.liverail.com/?metric=error&erc=[ERRORCODE]',
           'http://t3.liverail.com/?metric=error&erc=[ERRORCODE]'
         ]);
-        assert.deepEqual(secondArg(vastUtil.track), {ERRORCODE: 200});
+        assert.deepEqual(testUtils.secondArg(vastUtil.track), {ERRORCODE: 200});
       });
 
       it("must track the error code 900 if the passed error does not have a code", function(){
@@ -644,12 +655,12 @@ describe("VASTClient", function () {
         vast._trackError(error, adChain);
         sinon.assert.calledOnce(vastUtil.track);
 
-        assert.deepEqual(firstArg(vastUtil.track), [
+        assert.deepEqual(testUtils.firstArg(vastUtil.track), [
           'http://t1.liverail.com/?metric=error&erc=[ERRORCODE]',
           'http://t2.liverail.com/?metric=error&erc=[ERRORCODE]',
           'http://t3.liverail.com/?metric=error&erc=[ERRORCODE]'
         ]);
-        assert.deepEqual(secondArg(vastUtil.track), {ERRORCODE: 900});
+        assert.deepEqual(testUtils.secondArg(vastUtil.track), {ERRORCODE: 900});
       });
     });
   });

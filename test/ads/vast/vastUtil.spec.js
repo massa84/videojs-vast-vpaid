@@ -1,3 +1,10 @@
+var Creative = require('ads/vast/Creative');
+var vastUtil = require('ads/vast/vastUtil');
+
+var xml = require('utils/xml');
+
+var testUtils = require('../../test-utils');
+
 describe("vastUtil", function () {
   it("must be an object", function () {
     assert.isObject(vastUtil);
@@ -120,14 +127,14 @@ describe("vastUtil", function () {
     });
 
     it("must return an empty array if you pass no impressions", function () {
-      assertEmptyArray(parseImpressions());
+      testUtils.assertEmptyArray(parseImpressions());
     });
 
     it("must return an empty array if there is no real impression", function () {
       var inlineXML = '<InLine>' +
       '<Impression><![CDATA[]]></Impression>' +
       '</InLine>';
-      assertEmptyArray(parseImpressions(xml.toJXONTree(inlineXML).impression));
+      testUtils.assertEmptyArray(parseImpressions(xml.toJXONTree(inlineXML).impression));
     });
 
     it("must return an array with the passed impressions formatted", function () {
@@ -168,12 +175,12 @@ describe("vastUtil", function () {
     });
 
     it("must return an empty array if you pass no creativesJTree", function () {
-      assertEmptyArray(parseCreatives());
+      testUtils.assertEmptyArray(parseCreatives());
     });
 
     it("must return an empty array if there is no real creatives", function () {
       var inlineXML = '<InLine><Creatives></Creatives></InLine>';
-      assertEmptyArray(parseCreatives(xml.toJXONTree(inlineXML).creatives));
+      testUtils.assertEmptyArray(parseCreatives(xml.toJXONTree(inlineXML).creatives));
     });
 
 

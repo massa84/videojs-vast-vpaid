@@ -1,6 +1,11 @@
+var Wrapper = require('ads/vast/Wrapper');
+var Creative = require('ads/vast/Creative');
+
+var xml = require('utils/xml');
+
 describe("Wrapper", function () {
   it("must return an instance of Wrapper", function () {
-    assert.instanceOf(Wrapper(xml.toJXONTree('<Wrapper></Wrapper>')), Wrapper);
+    assert.instanceOf(new Wrapper(xml.toJXONTree('<Wrapper></Wrapper>')), Wrapper);
   });
 
   it("must set the adSystem", function () {
@@ -27,7 +32,7 @@ describe("Wrapper", function () {
         '<![CDATA[http://ad.doubleclick.net/imp;v7;x;223626102;0-0;0;47414672;0/0;30477563/30495440/1;;~aopt=0/0/ff/0;~cs=j%3fhttp://s0.2mdn.net/dot.gif]]>' +
         '</Impression>' +
         '</Wrapper>';
-      var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+      var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
 
       assert.deepEqual(wrapper.impressions, [
         'http://ad.doubleclick.net/imp;v7;x;223626102;0-0;0;47414672;0/0;30477563/30495440/1;;~aopt=0/0/ff/0;~cs=j%3fhttp://s0.2mdn.net/dot.gif'
@@ -46,7 +51,7 @@ describe("Wrapper", function () {
         '<![CDATA[]]>' +
         '</Impression>' +
         '</Wrapper>';
-      var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+      var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
 
       assert.deepEqual(wrapper.impressions, [
         'http://ad.doubleclick.net/imp;v7;x;223626102;0-0;0;47414672;0/0;30477563/30495440/1;;~aopt=0/0/ff/0;~cs=j%3fhttp://s0.2mdn.net/dot.gif',
@@ -59,7 +64,7 @@ describe("Wrapper", function () {
     var wrapperXML = '<Wrapper>' +
       '<VASTAdTagURI><![CDATA[http://demo.tremormedia.com/proddev/vast/vast_inline_linear.xml]]></VASTAdTagURI>' +
       '</Wrapper>';
-    var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+    var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
     assert.equal('http://demo.tremormedia.com/proddev/vast/vast_inline_linear.xml', wrapper.VASTAdTagURI);
   });
 
@@ -67,7 +72,7 @@ describe("Wrapper", function () {
     var wrapperXML = '<Wrapper>' +
       '<Error><![CDATA[http://pubads.g.doubleclick.net/pagead/conversion/[ERRORCODE]]]></Error>' +
       '</Wrapper>';
-    var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+    var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
     assert.equal(wrapper.error, 'http://pubads.g.doubleclick.net/pagead/conversion/[ERRORCODE]');
   });
 
@@ -79,7 +84,7 @@ describe("Wrapper", function () {
 
     it("must be contain the JXONTree of the extension element if set", function () {
       var wrapperXML = '<Wrapper><Extensions>price</Extensions></Wrapper>';
-      var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+      var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
 
       assert.isDefined(wrapper.extensions);
       assert.deepEqual(wrapper.extensions, xml.toJXONTree(wrapperXML).extensions);
@@ -94,7 +99,7 @@ describe("Wrapper", function () {
       '<Creative id="8455" sequence="2"></Creative>' +
       '</Creatives>' +
       '</Wrapper>';
-      var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+      var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
 
       assert.isArray(wrapper.creatives);
       assert.instanceOf(wrapper.creatives[0], Creative);
@@ -112,7 +117,7 @@ describe("Wrapper", function () {
 
     it("must contain whatever the followAdditionalWrappers attr from the wrapper tag contain on the xml", function () {
       var wrapperXML = '<Wrapper followAdditionalWrappers="false"></Wrapper>';
-      var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+      var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
       assert.isFalse(wrapper.followAdditionalWrappers);
     });
   });
@@ -120,7 +125,7 @@ describe("Wrapper", function () {
   describe("allowMultipleAds", function () {
     it("must be set if the attr is present on the wrapper tag", function () {
       var wrapperXML = '<Wrapper allowMultipleAds="false"></Wrapper>';
-      var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+      var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
       assert.isFalse(wrapper.allowMultipleAds);
     });
   });
@@ -128,7 +133,7 @@ describe("Wrapper", function () {
   describe("fallbackOnNoAd", function () {
     it("must be set if the attr is present on the wrapper tag", function () {
       var wrapperXML = '<Wrapper fallbackOnNoAd="false"></Wrapper>';
-      var wrapper = Wrapper(xml.toJXONTree(wrapperXML));
+      var wrapper = new Wrapper(xml.toJXONTree(wrapperXML));
       assert.isFalse(wrapper.fallbackOnNoAd);
     });
   });

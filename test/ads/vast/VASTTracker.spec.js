@@ -1,3 +1,13 @@
+var TrackingEvent = require('ads/vast/TrackingEvent');
+var VASTError = require('ads/vast/VASTError');
+var VASTTracker = require('ads/vast/VASTTracker');
+var VASTResponse = require('ads/vast/VASTResponse');
+var vastUtil = require('ads/vast/vastUtil');
+
+var utilities = require('utils/utilityFunctions');
+var xml = require('utils/xml');
+
+
 describe("VASTTracker", function () {
   var response, ASSET_URI;
 
@@ -15,17 +25,19 @@ describe("VASTTracker", function () {
   });
 
   it("must return an instance of itself", function () {
-    assert.instanceOf(VASTTracker(ASSET_URI, response), VASTTracker);
+    assert.instanceOf(new VASTTracker(ASSET_URI, response), VASTTracker);
   });
 
   it("must throw an error if you don't pass an asset URI to the constructor", function () {
     assert.throws(function () {
-     var tracker = new VASTTracker();
+      /*jshint unused:false*/
+      var tracker = new VASTTracker();
     }, VASTError, 'VAST Error: on VASTTracker constructor, missing required the URI of the ad asset being played');
   });
 
   it("must throw an error if you don't pass a VASTResponse obj to the constructor", function () {
     assert.throws(function () {
+      /*jshint unused:false*/
       var tracker = new VASTTracker(ASSET_URI);
     }, VASTError, 'VAST Error: on VASTTracker constructor, missing required VAST response');
   });
@@ -34,7 +46,7 @@ describe("VASTTracker", function () {
     var origTrack;
 
     function assertVASTTrackRequest(URLs, variables) {
-      URLs = isArray(URLs) ? URLs : [URLs];
+      URLs = utilities.isArray(URLs) ? URLs : [URLs];
       sinon.assert.calledWithExactly(vastUtil.track, URLs, variables);
     }
 
@@ -279,7 +291,7 @@ describe("VASTTracker", function () {
       'collapse',
       'expand'
     ].forEach(function (eventName) {
-      var fnName = 'track' + capitalize(eventName);
+      var fnName = 'track' + utilities.capitalize(eventName);
       describe(fnName, function(){
         var tracker;
 
@@ -301,7 +313,7 @@ describe("VASTTracker", function () {
       'close',
       'closeLinear'
     ].forEach(function (eventName) {
-      var fnName = 'track' + capitalize(eventName);
+      var fnName = 'track' + utilities.capitalize(eventName);
       describe(fnName, function(){
         var tracker;
 
@@ -322,7 +334,7 @@ describe("VASTTracker", function () {
       'midpoint',
       'thirdQuartile'
     ].forEach(function (quartile) {
-      var fnName = 'track' + capitalize(quartile);
+      var fnName = 'track' + utilities.capitalize(quartile);
       describe(fnName, function(){
         var tracker;
 

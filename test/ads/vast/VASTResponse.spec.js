@@ -1,10 +1,23 @@
+var Ad = require('ads/vast/Ad');
+var InLine = require('ads/vast/InLine');
+var Linear = require('ads/vast/Linear');
+var TrackingEvent = require('ads/vast/TrackingEvent');
+var VASTResponse = require('ads/vast/VASTResponse');
+var VideoClicks = require('ads/vast/VideoClicks');
+var Wrapper = require('ads/vast/Wrapper');
+
+var xml = require('utils/xml');
+var utilities = require('utils/utilityFunctions');
+
+var testUtils = require('../../test-utils');
+
 describe("VASTResponse", function () {
   function assertVASTResponseEmpty(vastResponse) {
     assert.deepEqual(vastResponse, new VASTResponse());
   }
 
   it("must return an instance of itself", function () {
-    assert.instanceOf(VASTResponse(), VASTResponse);
+    assert.instanceOf(new VASTResponse(), VASTResponse);
   });
 
   describe("instance", function () {
@@ -59,7 +72,7 @@ describe("VASTResponse", function () {
 
     describe("adTitle", function () {
       it("must be an empty string", function () {
-        assert.isTrue(isEmptyString(response.adTitle));
+        assert.isTrue(utilities.isEmptyString(response.adTitle));
       });
     });
 
@@ -71,7 +84,7 @@ describe("VASTResponse", function () {
 
     describe("mediaFiles", function(){
       it("must be an empty array by default", function(){
-        assertEmptyArray(response.mediaFiles);
+        testUtils.assertEmptyArray(response.mediaFiles);
       });
     });
 
@@ -101,7 +114,7 @@ describe("VASTResponse", function () {
         assert.deepEqual([], response.ads);
       });
 
-      it("must add the inline to the response if the passed ad has an Inline", function(){
+      it("must add the InLine to the response if the passed ad has an InLine", function(){
         var vastJTree = xml.toJXONTree('<VAST><Ad><InLine></InLine></Ad></VAST>');
         var ad = new Ad(vastJTree.ad);
         sinon.stub(response, '_addInLine');
@@ -161,7 +174,7 @@ describe("VASTResponse", function () {
         response._addImpressions({});
         response._addImpressions('');
         response._addImpressions([]);
-        assertEmptyArray(response.impressions);
+        testUtils.assertEmptyArray(response.impressions);
       });
 
       it("must add the passed impressionTree to the impressions array", function () {
@@ -211,7 +224,7 @@ describe("VASTResponse", function () {
         response._addClickTrackings({});
         response._addClickTrackings('');
         response._addClickTrackings([]);
-        assertEmptyArray(response.clickTrackings);
+        testUtils.assertEmptyArray(response.clickTrackings);
       });
 
       it("must add all the passed clickTrackings to the response", function () {
@@ -233,7 +246,7 @@ describe("VASTResponse", function () {
         response._addCustomClicks({});
         response._addCustomClicks('');
         response._addCustomClicks([]);
-        assertEmptyArray(response.customClicks);
+        testUtils.assertEmptyArray(response.customClicks);
       });
 
       it("must add all the passed customCustom clicks to the response", function () {
@@ -312,7 +325,7 @@ describe("VASTResponse", function () {
     });
 
     describe("_addVideoClicks", function () {
-      it("must not add anything to the response if you don't pass an instace of Inline", function () {
+      it("must not add anything to the response if you don't pass an instace of InLine", function () {
         response._addVideoClicks();
         response._addVideoClicks({});
         response._addVideoClicks([]);
@@ -365,7 +378,7 @@ describe("VASTResponse", function () {
         response._addMediaFiles({});
         response._addMediaFiles('');
         response._addMediaFiles([]);
-        assertEmptyArray(response.mediaFiles);
+        testUtils.assertEmptyArray(response.mediaFiles);
       });
 
       it("must add the passed mediaFiles to the response", function(){
@@ -380,7 +393,7 @@ describe("VASTResponse", function () {
           '</MediaFile>' +
           '</MediaFiles>' +
           '</Linear>';
-        var linear = Linear(xml.toJXONTree(linearXML));
+        var linear = new Linear(xml.toJXONTree(linearXML));
 
         response._addMediaFiles(linear.mediaFiles);
         assert.deepEqual(response.mediaFiles, linear.mediaFiles);
@@ -388,7 +401,7 @@ describe("VASTResponse", function () {
     });
 
     describe("_addLinear", function () {
-      it("must not add anything to the response if you don't pass an instace of Inline", function () {
+      it("must not add anything to the response if you don't pass an instace of InLine", function () {
         response._addLinear();
         response._addLinear({});
         response._addLinear([]);
@@ -434,7 +447,7 @@ describe("VASTResponse", function () {
           '<![CDATA[http://gcdn.2mdn.net/MotifFiles/html/2215309/PID_914438_1235753019000_dcrmvideo.flv]]>' +
           '</MediaFile>' +
           '</MediaFiles></Linear>';
-        var linear = Linear(xml.toJXONTree(linearXML));
+        var linear = new Linear(xml.toJXONTree(linearXML));
 
         response._addLinear(linear);
         assert.deepEqual(response.mediaFiles, linear.mediaFiles);
@@ -443,7 +456,7 @@ describe("VASTResponse", function () {
       it("must add the skipoffset to the response", function(){
         var linearXML = '<?xml version="1.0" encoding="UTF-8"?>' +
           '<Linear skipoffset="00:00:01.000"></Linear>';
-        var linear = Linear(xml.toJXONTree(linearXML));
+        var linear = new Linear(xml.toJXONTree(linearXML));
 
         response._addLinear(linear);
         assert.equal(response.skipoffset, 1000);
@@ -454,7 +467,7 @@ describe("VASTResponse", function () {
           '<Linear>' +
             '<AdParameters xmlEncoded="true"><![CDATA['+xml.encode('<data>Some Data</data>')+']]></AdParameters>' +
           '</Linear>';
-        var linear = Linear(xml.toJXONTree(linearXML));
+        var linear = new Linear(xml.toJXONTree(linearXML));
 
         response._addLinear(linear);
         assert.equal(response.adParameters, '<data>Some Data</data>');
@@ -462,7 +475,7 @@ describe("VASTResponse", function () {
     });
 
     describe("_addInLine", function () {
-      it("must not add anything to the response if you don't pass an instance of Inline", function () {
+      it("must not add anything to the response if you don't pass an instance of InLine", function () {
         response._addInLine();
         response._addInLine({});
         response._addInLine([]);
@@ -500,8 +513,8 @@ describe("VASTResponse", function () {
       });
 
       it("must add the linear to the response", function () {
-        var inlineXML = '<InLine><Creatives><Creative><Linear><Duration>00:00:58</Duration></Linear></Creative></Creatives></InLine>';
-        var inLine = new InLine(xml.toJXONTree(inlineXML));
+        var inLineXML = '<InLine><Creatives><Creative><Linear><Duration>00:00:58</Duration></Linear></Creative></Creatives></InLine>';
+        var inLine = new InLine(xml.toJXONTree(inLineXML));
         response._addInLine(inLine);
         assert.equal(response.duration, 58000);// The duration gets added as part of the linear
       });

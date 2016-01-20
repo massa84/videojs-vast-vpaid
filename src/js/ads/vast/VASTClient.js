@@ -1,13 +1,12 @@
 'use strict';
 
 var Ad = require('./Ad');
-var Linear = require('./Linear');
 var VASTError = require('./VASTError');
 var VASTResponse = require('./VASTResponse');
 var vastUtil = require('./vastUtil');
 
 var async = require('../../utils/async');
-var http = require('../../utils/http');
+var http = require('../../utils/http').http;
 var utilities = require('../../utils/utilityFunctions');
 var xml = require('../../utils/xml');
 
@@ -104,14 +103,14 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
       vastTree = xml.toJXONTree(xmlStr);
 
       if(utilities.isArray(vastTree.ad)) {
-        vastTree.ads = utilities.isArray(vastTree.ad)
+        vastTree.ads = vastTree.ad;
       } else if(vastTree.ad){
         vastTree.ads = [vastTree.ad];
       } else {
         vastTree.ads = [];
       }
-
       callback(validateVASTTree(vastTree), vastTree);
+
     } catch (e) {
       callback(new VASTError("on VASTClient.getVASTAd.buildVastWaterfall, error parsing xml", 100), null);
     }
@@ -120,7 +119,7 @@ VASTClient.prototype._getVASTAd = function (adTagUrl, callback) {
   function validateVASTTree(vastTree) {
     var vastVersion = xml.attr(vastTree, 'version');
 
-    if (!vastTree.ads.length) {
+    if (!vastTree.ad) {
       return new VASTError('on VASTClient.getVASTAd.validateVASTTree, no Ad in VAST tree', 303);
     }
 
