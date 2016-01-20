@@ -1,6 +1,5 @@
 var gulp        = require( "gulp" );
 var supervisor  = require( "gulp-supervisor" );
-var runSequence = require('run-sequence');
 
 var BuildTaskDoc = require('./BuildTaskDoc');
 

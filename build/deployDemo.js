@@ -1,11 +1,10 @@
-var gulp = require('gulp');
-var path = require('path');
+var gulp        = require('gulp');
+var path        = require('path');
 var runSequence = require('run-sequence');
+var ghPages     = require('gulp-gh-pages');
+
 var BuildTaskDoc = require('./BuildTaskDoc');
-var config = require('./config');
-var ghPages = require('gulp-gh-pages');
-var git = require('gulp-git');
-var del = require('del');
+var config       = require('./config');
 
 gulp.task('update-gh-pages', function() {
   return gulp.src(path.join(config.DEV, '**/*'))

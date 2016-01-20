@@ -48,7 +48,7 @@ gulp.task('clean', function (cb) {
 
 
 
-gulp.task('build-scripts', function(done) {
+gulp.task('build-scripts', function() {
   var buildProcesses = config.versions.map(function(version) {
     var entryFile = 'videojs_' + version + '.vast.js';
     var entryPath = 'src/js/' + entryFile;
@@ -61,7 +61,7 @@ gulp.task('build-scripts', function(done) {
       .transform(babelify, {presets: ["es2015"]})
       .bundle()
       .pipe(source(entryFile))
-      .pipe(gulp.dest(assetsDevPath))
+      .pipe(gulp.dest(assetsDevPath));
   });
   return mergeStream.apply(this, buildProcesses);
 });

@@ -10,10 +10,6 @@ module.exports = function (karma) {
      */
     frameworks: [ 'browserify', 'mocha', 'chai-sinon'],
 
-    files: [
-        'bower_components/videojs_4/dist/video-js/video.js',
-        'test/test-utils.css',
-        'test/**/*.spec.js'],
     preprocessors: {
       'test/**/*.js': [ 'browserify' ]
     },

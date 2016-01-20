@@ -1,5 +1,4 @@
 var browserify   = require('browserify');
-var flatten      = require('gulp-flatten');
 var gulp         = require('gulp');
 var mergeStream  = require('merge-stream');
 var path         = require('path');
@@ -48,7 +47,7 @@ gulp.task('build-demo-page', function () {
     return gulp.src(demoPage)
       .pipe(template({
         version: version,
-        otherVersions: config.versions.filter(function(v) { return v !== version})
+        otherVersions: config.versions.filter(function(v) { return v !== version;})
       }))
       .pipe(rename('index_'+version+'.html'))
       .pipe(gulp.dest(config.DEV));
@@ -62,7 +61,7 @@ gulp.task('build-demo-scripts', function () {
   var mainScript = path.join('demo/scripts', 'main.js');
   var scriptsDistPath = path.join(config.DEV, '/demo');
 
-  var bundle_stream = browserify({
+  return browserify({
       entries: mainScript,
       insertGlobals: true,
       debug : true
@@ -75,7 +74,7 @@ gulp.task('build-demo-styles', function () {
   var mainStyle = path.join('demo/styles', 'demo.scss');
   var styleDistPath = path.join(config.DEV, '/demo');
 
-  gulp.src(mainStyle)
+  return gulp.src(mainStyle)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(styleDistPath));
 

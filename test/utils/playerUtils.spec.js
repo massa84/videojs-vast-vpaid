@@ -18,7 +18,7 @@ describe("playerUtils", function () {
   var testDiv, player, tech;
   beforeEach(function () {
     testDiv = document.createElement("div");
-    testDiv.innerHTML = '<video id="playerVideoTestEl" class="video-js vjs-default-skin" ' +
+    testDiv.innerHTML = '<video id="playerVideoTestEl_playerUtils" class="video-js vjs-default-skin" ' +
       'controls preload="none" style="border:none"' +
       'poster="http://vjs.zencdn.net/v/oceans.png" >' +
       '<source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4"/>' +
@@ -29,7 +29,7 @@ describe("playerUtils", function () {
       '</p>' +
       '</video>';
     document.body.appendChild(testDiv);
-    player = videojs("#playerVideoTestEl");
+    player = videojs("#playerVideoTestEl_playerUtils");
     tech = player.el().querySelector('.vjs-tech');
   });
 
@@ -732,7 +732,7 @@ describe("playerUtils.removeNativePoster", function () {
 
   beforeEach(function () {
     testDiv = document.createElement("div");
-    testDiv.innerHTML = '<video id="playerVideoTestEl" class="video-js vjs-default-skin" ' +
+    testDiv.innerHTML = '<video id="playerVideoTestEl_removeNativePoster" class="video-js vjs-default-skin" ' +
       'controls preload="none" style="border:none"' +
       'poster="http://vjs.zencdn.net/v/oceans.png" >' +
       '<source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4"/>' +
@@ -741,7 +741,7 @@ describe("playerUtils.removeNativePoster", function () {
       '</p>' +
       '</video>';
     document.body.appendChild(testDiv);
-    player = videojs("#playerVideoTestEl", {});
+    player = videojs("#playerVideoTestEl_removeNativePoster", {});
     tech = player.el().querySelector('.vjs-tech');
   });
 
@@ -750,7 +750,6 @@ describe("playerUtils.removeNativePoster", function () {
   });
 
   it("must remove the poster of the passed player", function () {
-    var tech = player.el().querySelector('.vjs-tech');
     playerUtils.removeNativePoster(player);
     assert.isNull(tech.getAttribute('poster'));
   });
