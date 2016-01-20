@@ -1,10 +1,11 @@
 var requireDir = require('require-dir');
-var asciify = require('asciify');
-var gulp = require('gulp');
-var async = require('async');
-var Table = require('cli-table');
+var asciify    = require('asciify');
+var gulp       = require('gulp');
+var async      = require('async');
+var Table      = require('cli-table');
+var fs         = require('fs');
+
 var BuildTaskDoc = require('./build/BuildTaskDoc');
-var fs = require('fs');
 
 //Init colors
 require('./build/COLORS');
@@ -13,12 +14,11 @@ require('./build/COLORS');
 var buildTasksMap = requireDir('./build');
 
 
-
 gulp.task('default', function (finishTask) {
     async.series([
-            printWelcomeMessage,
-            printBanner,
-            printTasksHelpTable
+        printWelcomeMessage,
+        printBanner,
+        printTasksHelpTable
         ],
         finishTask
     );
@@ -27,13 +27,13 @@ gulp.task('default', function (finishTask) {
 
     function printWelcomeMessage(done) {
         console.log("Welcome to MailOnline's new".info);
-        done(null);
+        done();
     }
 
     function printBanner(done) {
         asciify('Videojs Vast Vpaid', function (err, res) {
             console.log(res.help);
-            done(null);
+            done();
         });
     }
 
@@ -55,32 +55,26 @@ gulp.task('default', function (finishTask) {
 
         console.log('###### Below, you have the list of all the available build tasks ########');
         console.log(table.toString());
-        //console.log('   ');
-        //console.log("NOTE: if a task is run with '--env production' it will execute the build task for production. Minifying scritps and so on".blue);
         console.log('   ');
-        done(null);
+        console.log("NOTE: if a task is run with '--env production' it will execute the build task for production. Minifying scripts and so on".green);
+        console.log('   ');
+        done();
     }
 
     function getBuildTasks(tasksDir) {
-        var tasks = [];
-        Object.keys(tasksDir).forEach(function (taskName) {
-            var task = tasksDir[taskName];
-            if(task instanceof BuildTaskDoc){
-                tasks.push(task);
-            }
-        });
 
+        var tasks = Object.keys(tasksDir)
+            .map(function mapTasks(taskName) {
+                return tasksDir[taskName];
+            })
+            .filter(function filterTasks(task) {
+                return task instanceof BuildTaskDoc;
+            })
+            .sort(function compareTasks(a, b) {
+                return a.order > b.order ? 1 : -1;
+            });
 
-        return tasks.sort(function compare(a, b) {
-            if (a.order < b.order) {
-                return -1;
-            }
-            if (a.order > b.order) {
-                return 1;
-            }
-            // a must be equal to b
-            return 0;
-        });
+        return tasks;
     }
 
 });

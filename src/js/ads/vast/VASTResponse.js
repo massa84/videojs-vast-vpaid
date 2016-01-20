@@ -6,8 +6,8 @@ var Linear = require('./Linear');
 var InLine = require('./InLine');
 var Wrapper = require('./Wrapper');
 
-var utilities = require('../../../utils/utilityFunctions');
-var xml = require('../../../utils/xml');
+var utilities = require('../../utils/utilityFunctions');
+var xml = require('../../utils/xml');
 
 window.InLine__A = InLine;
 function VASTResponse() {

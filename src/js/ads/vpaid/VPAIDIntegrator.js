@@ -1,9 +1,9 @@
 'use strict';
 
-var VASTError = require('../vast/client/VASTError');
-var VASTResponse = require('../vast/client/VASTResponse');
-var VASTTracker = require('../vast/client/VASTTracker');
-var vastUtil = require('../vast/client/vastUtil');
+var VASTError = require('../vast/VASTError');
+var VASTResponse = require('../vast/VASTResponse');
+var VASTTracker = require('../vast/VASTTracker');
+var vastUtil = require('../vast/vastUtil');
 
 var VPAIDAdUnitWrapper = require('./VPAIDAdUnitWrapper');
 var VPAIDHTML5Tech = require('./VPAIDHTML5Tech');

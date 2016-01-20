@@ -1,7 +1,7 @@
 'use strict';
 
-var utilities = require('../../../utils/utilityFunctions');
-var xml = require('../../../utils/xml');
+var utilities = require('../../utils/utilityFunctions');
+var xml = require('../../utils/xml');
 
 function VideoClicks(videoClickJTree) {
   if (!(this instanceof VideoClicks)) {

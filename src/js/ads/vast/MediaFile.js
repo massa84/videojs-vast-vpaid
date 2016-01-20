@@ -1,6 +1,6 @@
 'use strict';
 
-var xml = require('../../../utils/xml');
+var xml = require('../../utils/xml');
 
 function MediaFile(mediaFileJTree) {
   if (!(this instanceof MediaFile)) {

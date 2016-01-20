@@ -6,10 +6,10 @@ var VASTError = require('./VASTError');
 var VASTResponse = require('./VASTResponse');
 var vastUtil = require('./vastUtil');
 
-var async = require('../../../utils/async');
-var http = require('../../../utils/http');
-var utilities = require('../../../utils/utilityFunctions');
-var xml = require('../../../utils/xml');
+var async = require('../../utils/async');
+var http = require('../../utils/http');
+var utilities = require('../../utils/utilityFunctions');
+var xml = require('../../utils/xml');
 
 function VASTClient(options) {
   if (!(this instanceof VASTClient)) {

@@ -7,6 +7,8 @@ var BuildTaskDoc = require('./BuildTaskDoc');
 /**
  * Run test once and exit
  */
+
+ /*
 var testTasks = [];
 config.versions.forEach(function(version) {
   var testTask = 'test_' + version;
@@ -35,5 +37,5 @@ config.versions.forEach(function(version) {
 })
 
 gulp.task('test', testTasks);
-
+*/
 module.exports = new BuildTaskDoc('test', "Starts karma on 'autowatch' mode with all the libs, \nsources and tests of the player", 6.1);

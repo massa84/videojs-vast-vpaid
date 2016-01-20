@@ -3,7 +3,7 @@
 var VASTError = require('./VASTError');
 var VASTResponse = require('./VASTResponse');
 var vastUtil = require('./vastUtil');
-var utilities = require('../../../utils/utilityFunctions');
+var utilities = require('../../utils/utilityFunctions');
 
 function VASTTracker(assetURI, vastResponse) {
   if (!(this instanceof VASTTracker)) {

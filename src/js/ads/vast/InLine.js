@@ -2,8 +2,8 @@
 
 var vastUtil = require('./vastUtil');
 
-var utilities = require('../../../utils/utilityFunctions');
-var xml = require('../../../utils/xml');
+var utilities = require('../../utils/utilityFunctions');
+var xml = require('../../utils/xml');
 
 function InLine(inlineJTree) {
   if (!(this instanceof InLine)) {

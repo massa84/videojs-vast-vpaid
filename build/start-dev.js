@@ -4,25 +4,11 @@ var runSequence = require('run-sequence');
 
 var BuildTaskDoc = require('./BuildTaskDoc');
 
-gulp.task( "start-dev", function (callback) {
-  runSequence(
-    'build-demo',
-    [
-      'dev-server',
-      'watch'
-    ],
-    function (error) {
-      if(error){
-        console.log(error.message.red);
-      }
-      console.log('BUILD FINISHED SUCCESSFULLY'.green);
-      callback();
-    });
-});
+gulp.task( "start-dev", ['build-demo', 'dev-server','watch']);
 
 gulp.task( "dev-server", ['build-demo'], function() {
   console.log('STARTING DEVELOPMENT SERVER'.blue);
   supervisor( "demo/server/index.js" );
 });
 
-module.exports = new BuildTaskDoc("start-dev", "Starts dev server and watch task. \nIf you use \"--env production\" everything will be minified \nand the bin folder will be updated accordingly. ", 1);
+module.exports = new BuildTaskDoc("start-dev", "Starts dev server and watch task.", 1);

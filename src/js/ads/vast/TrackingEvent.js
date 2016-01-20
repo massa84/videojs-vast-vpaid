@@ -2,7 +2,7 @@
 
 var vastUtil = require('./vastUtil');
 
-var xml = require('../../../utils/xml');
+var xml = require('../../utils/xml');
 
 function TrackingEvent(trackingJTree, duration) {
   if (!(this instanceof TrackingEvent)) {

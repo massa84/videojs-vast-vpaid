@@ -4,8 +4,8 @@ var TrackingEvent = require('./TrackingEvent');
 var MediaFile = require('./MediaFile');
 var VideoClicks = require('./VideoClicks');
 
-var utilities = require('../../../utils/utilityFunctions');
-var xml = require('../../../utils/xml');
+var utilities = require('../../utils/utilityFunctions');
+var xml = require('../../utils/xml');
 
 
 function Linear(linearJTree) {

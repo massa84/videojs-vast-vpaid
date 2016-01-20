@@ -9,6 +9,7 @@ var minifyCSS   = require('gulp-minify-css');
 var path        = require('path');
 var rename      = require('gulp-rename');
 var runSequence = require('run-sequence');
+var sass        = require('gulp-sass');
 var source      = require('vinyl-source-stream');
 var sourcemaps  = require('gulp-sourcemaps');
 var uglify      = require("gulp-uglify");
@@ -50,7 +51,7 @@ gulp.task('clean', function (cb) {
 gulp.task('build-scripts', function(done) {
   var buildProcesses = config.versions.map(function(version) {
     var entryFile = 'videojs_' + version + '.vast.js';
-    var entryPath = 'src/plugin/' + entryFile;
+    var entryPath = 'src/js/' + entryFile;
     return browserify({
         entries: entryPath,
         debug: true,
@@ -64,8 +65,6 @@ gulp.task('build-scripts', function(done) {
   });
   return mergeStream.apply(this, buildProcesses);
 });
-
-var sass = require('gulp-sass');
 
 gulp.task('build-styles', function () {
 

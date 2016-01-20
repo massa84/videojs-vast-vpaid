@@ -1,7 +1,7 @@
 'use strict';
 
 var Creative = require('./Creative');
-var utilities = require('../../../utils/utilityFunctions');
+var utilities = require('../../utils/utilityFunctions');
 
 var vastUtil = {
 

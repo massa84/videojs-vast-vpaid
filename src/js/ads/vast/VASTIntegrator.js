@@ -14,10 +14,10 @@ var VASTError = require('./VASTError');
 var VASTTracker = require('./VASTTracker');
 var vastUtil = require('./vastUtil');
 
-var async = require('../../../utils/async');
-var dom = require('../../../utils/dom');
-var playerUtils = require('../../../utils/playerUtils');
-var utilities = require('../../../utils/utilityFunctions');
+var async = require('../../utils/async');
+var dom = require('../../utils/dom');
+var playerUtils = require('../../utils/playerUtils');
+var utilities = require('../../utils/utilityFunctions');
 
 function VASTIntegrator(player) {
   if (!(this instanceof VASTIntegrator)) {

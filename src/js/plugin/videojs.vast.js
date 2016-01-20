@@ -1,10 +1,10 @@
 'use strict';
 
-var VASTClient = require('../ads/vast/client/VASTClient');
-var VASTError = require('../ads/vast/client/VASTError');
-var vastUtil = require('../ads/vast/client/vastUtil');
+var VASTClient = require('../ads/vast/VASTClient');
+var VASTError = require('../ads/vast/VASTError');
+var vastUtil = require('../ads/vast/vastUtil');
 
-var VASTIntegrator = require('../ads/vast/client/VASTIntegrator');
+var VASTIntegrator = require('../ads/vast/VASTIntegrator');
 var VPAIDIntegrator = require('../ads/vpaid/VPAIDIntegrator');
 
 var async = require('../utils/async');
